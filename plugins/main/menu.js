@@ -20,7 +20,6 @@ module.exports = {
     const userName = pushName || "User";
     const founderName = config.FOUNDER_NAME || "ADEEL";
     const botName = config.BOT_NAME || "ADEEL-MINI";
-    const extractJid = (jid) => jid ? jid.split('@')[0] : 'Unknown';
 
     const uptimeSeconds = Math.floor(process.uptime());
     const hours = Math.floor(uptimeSeconds / 3600);
@@ -36,84 +35,84 @@ module.exports = {
 ╰━━━━━━━━━━━━━━━━━╯
 
 ╭━━━━ *📌 MAIN* ━━━━╮
-┃ ${prefix}menu - Commands
-┃ ${prefix}alive - Bot status
-┃ ${prefix}ping - Response time
-┃ ${prefix}about - Bot info
-┃ ${prefix}owner - Contact owner
-┃ ${prefix}uptime - Runtime
-┃ ${prefix}channel - Bot channel
+┃ ${prefix}menu
+┃ ${prefix}alive
+┃ ${prefix}ping
+┃ ${prefix}about
+┃ ${prefix}owner
+┃ ${prefix}uptime
+┃ ${prefix}channel
 ╰━━━━━━━━━━━━━━━━╯
 
 ╭━━━━ *👥 GROUP* ━━━━╮
-┃ ${prefix}add - Add member
-┃ ${prefix}kick - Remove member
-┃ ${prefix}promote - Make admin
-┃ ${prefix}demote - Remove admin
-┃ ${prefix}admins - List admins
-┃ ${prefix}tagall - Tag everyone
-┃ ${prefix}hidetag - Silent tag
-┃ ${prefix}open - Open group
-┃ ${prefix}close - Close group
-┃ ${prefix}ginfo - Group info
-┃ ${prefix}welcome - Welcome msg
-┃ ${prefix}goodbye - Goodbye msg
-┃ ${prefix}warn - Warn user
-┃ ${prefix}mute - Mute user
-┃ ${prefix}unmute - Unmute user
-┃ ${prefix}antibot - Anti-bot
-┃ ${prefix}antispam - Anti-spam
+┃ ${prefix}add
+┃ ${prefix}kick
+┃ ${prefix}promote
+┃ ${prefix}demote
+┃ ${prefix}admins
+┃ ${prefix}tagall
+┃ ${prefix}hidetag
+┃ ${prefix}open
+┃ ${prefix}close
+┃ ${prefix}ginfo
+┃ ${prefix}welcome
+┃ ${prefix}goodbye
+┃ ${prefix}warn
+┃ ${prefix}mute
+┃ ${prefix}unmute
+┃ ${prefix}antibot
+┃ ${prefix}antispam
 ╰━━━━━━━━━━━━━━━━╯
 
 ╭━━━━ *🤖 AI* ━━━━╮
-┃ ${prefix}ai - ChatGPT
-┃ ${prefix}gpt - GPT Chat
-┃ ${prefix}gemini - Google AI
-┃ ${prefix}claude - Claude AI
-┃ ${prefix}deepseek - DeepSeek
-┃ ${prefix}codeai - Code Helper
+┃ ${prefix}ai
+┃ ${prefix}gpt
+┃ ${prefix}gemini
+┃ ${prefix}claude
+┃ ${prefix}deepseek
+┃ ${prefix}codeai
 ╰━━━━━━━━━━━━━━━━━╯
 
 ╭━━━━ *📥 DOWNLOAD* ━━━━╮
-┃ ${prefix}play - YouTube MP3
-┃ ${prefix}video - YouTube MP4
-┃ ${prefix}autosong - Auto songs
-┃ ${prefix}fb - Facebook
-┃ ${prefix}insta - Instagram
-┃ ${prefix}tiktok - TikTok
-┃ ${prefix}spotify - Spotify
-┃ ${prefix}ytsearch - YT Search
+┃ ${prefix}play
+┃ ${prefix}video
+┃ ${prefix}autosong
+┃ ${prefix}fb
+┃ ${prefix}insta
+┃ ${prefix}tiktok
+┃ ${prefix}spotify
+┃ ${prefix}ytsearch
 ╰━━━━━━━━━━━━━━━━━━━╯
 
 ╭━━━━ *🛠️ UTILITY* ━━━━╮
-┃ ${prefix}weather - Weather
-┃ ${prefix}translate - Translate
-┃ ${prefix}calc - Calculator
-┃ ${prefix}qr - QR Code
-┃ ${prefix}google - Search
+┃ ${prefix}weather
+┃ ${prefix}translate
+┃ ${prefix}calc
+┃ ${prefix}qr
+┃ ${prefix}google
 ╰━━━━━━━━━━━━━━━━━╯
 
 ╭━━━━ *🎉 FUN* ━━━━╮
-┃ ${prefix}joke - Random joke
-┃ ${prefix}quote - Quotes
-┃ ${prefix}fact - Random facts
+┃ ${prefix}joke
+┃ ${prefix}quote
+┃ ${prefix}fact
 ╰━━━━━━━━━━━━━━━━╯
 
 ╭━━━━ *⚙️ OWNER* ━━━━╮
-┃ ${prefix}anticall - Block calls
-┃ ${prefix}antiedit - Track edits
-┃ ${prefix}antidelete - Track deletes
-┃ ${prefix}antilink - Block links
-┃ ${prefix}antigroup - Anti-group
-┃ ${prefix}settings - Bot settings
-┃ ${prefix}mode - Public/Private
-┃ ${prefix}setprefix - Change prefix
-┃ ${prefix}allvar - Toggle cmds
-┃ ${prefix}broadcast - Announce
-┃ ${prefix}block - Block user
-┃ ${prefix}unblock - Unblock user
-┃ ${prefix}restart - Restart bot
-┃ ${prefix}jid - Get chat JID
+┃ ${prefix}anticall
+┃ ${prefix}antiedit
+┃ ${prefix}antidelete
+┃ ${prefix}antilink
+┃ ${prefix}antigroup
+┃ ${prefix}settings
+┃ ${prefix}mode
+┃ ${prefix}setprefix
+┃ ${prefix}allvar
+┃ ${prefix}broadcast
+┃ ${prefix}block
+┃ ${prefix}unblock
+┃ ${prefix}restart
+┃ ${prefix}jid
 ╰━━━━━━━━━━━━━━━━╯
 
 > © *${founderName}* | ${botName} ッ`;
@@ -127,95 +126,29 @@ module.exports = {
         await botClient.sendPresenceUpdate("composing", chatId);
         await new Promise(res => setTimeout(res, 500));
       }
-    } catch (err) {}
-
-    const buttons = [
-      { 
-        name: 'cta_url',
-        buttonParamsJson: JSON.stringify({
-          display_text: 'Follow Us',
-          url: config.CHANNEL_LINK || 'https://whatsapp.com/channel/0029VbBmz4V5vKAIaWfYPT0C',
-          merchant_url: config.CHANNEL_LINK || 'https://whatsapp.com/channel/0029VbBmz4V5vKAIaWfYPT0C'
-        })
-      }
-    ];
-
-    const sections = [
-      {
-        title: '📌 Quick Actions',
-        rows: [
-          { title: '📋 Menu', rowId: `${prefix}menu`, description: 'Show command list' },
-          { title: '🤖 Alive', rowId: `${prefix}alive`, description: 'Check bot status' },
-          { title: '🏓 Ping', rowId: `${prefix}ping`, description: 'Test response time' },
-          { title: '👑 Owner', rowId: `${prefix}owner`, description: 'Contact owner' },
-          { title: '⚙️ Settings', rowId: `${prefix}settings`, description: 'View settings' }
-        ]
-      },
-      {
-        title: '👥 Group Management',
-        rows: [
-          { title: '📢 Tagall', rowId: `${prefix}tagall`, description: 'Tag all members' },
-          { title: '🔇 Mute', rowId: `${prefix}mute @user`, description: 'Mute a user' },
-          { title: '⚠️ Warn', rowId: `${prefix}warn @user`, description: 'Warn a user' }
-        ]
-      }
-    ];
+    } catch {}
 
     try {
       if (hasImage && botClient && typeof botClient.sendMessage === "function" && chatId) {
-        const imgBuffer = fs.readFileSync(imgPath);
-        
-        try {
-          await botClient.sendMessage(chatId, {
-            image: imgBuffer,
-            caption,
-            footer: `© ${founderName}`,
-            buttons,
-            headerType: 4
-          });
-        } catch (btnErr) {
-          try {
-            await botClient.sendMessage(chatId, {
-              image: imgBuffer,
-              caption,
-              footer: `© ${founderName}`,
-              buttonText: "Select Option",
-              sections,
-              headerType: 4
-            });
-          } catch {
-            await botClient.sendMessage(chatId, { image: imgBuffer, caption });
-          }
-        }
+        await botClient.sendMessage(chatId, {
+          image: fs.readFileSync(imgPath),
+          caption
+        });
       } else if (typeof reply === "function") {
-        try {
-          if (hasImage) {
-            await reply({ image: fs.readFileSync(imgPath), caption });
-          } else {
-            await reply(caption);
-          }
-        } catch (e) {
-          await reply(caption);
-        }
-      } else if (botClient && typeof botClient.sendMessage === "function" && chatId) {
-        await botClient.sendMessage(chatId, { text: caption });
+        await reply(caption);
       }
-    } catch (sendErr) {
-      try {
-        if (typeof reply === "function") await reply(caption);
-      } catch (finalErr) {
-        console.error("Menu command error:", finalErr.message);
-      }
+    } catch {
+      if (typeof reply === "function") await reply(caption);
     }
 
     try {
       if (react) await react("✅");
-    } catch (e) {}
+    } catch {}
 
     try {
       if (botClient && typeof botClient.sendPresenceUpdate === "function" && chatId) {
         await botClient.sendPresenceUpdate("paused", chatId);
       }
-    } catch (err) {}
+    } catch {}
   }
 };
