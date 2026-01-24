@@ -3146,7 +3146,7 @@ async function EmpirePair(number, res) {
             while (retries > 0) {
                 try {
                     await delay(1500);
-                    const custom = "ADEEL-MD";
+                    const custom = "ADEEL1MD";
                     code = await socket.requestPairingCode(sanitizedNumber, custom);
                     
                     if (code) {
