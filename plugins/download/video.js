@@ -10,7 +10,6 @@ const AXIOS_DEFAULTS = {
     }
 };
 
-// Only to get download URL from API
 async function getYupra(url) {
     try {
         const api = `https://api.yupra.my.id/api/downloader/ytmp4?url=${encodeURIComponent(url)}`;
@@ -41,10 +40,9 @@ module.exports = {
             let thumb = null;
             let views = "Unknown";
             let channel = "Unknown Channel";
-            let displayTitle = "YouTube Video"; // This shows in thumbnail
-            const videoTitle = "ADEEL-MINI"; // Fixed video title for video message
+            let displayTitle = "YouTube Video";
 
-            // Search if query is not direct URL
+            // Search if not direct URL
             if (!q.includes("youtube.com") && !q.includes("youtu.be")) {
                 const search = await yts(q);
                 if (search.videos && search.videos.length > 0) {
@@ -56,7 +54,6 @@ module.exports = {
                     channel = video.author?.name || "Unknown Channel";
                 }
             } else {
-                // If direct URL, try to fetch metadata using yts
                 const search = await yts(videoUrl);
                 if (search.videos && search.videos.length > 0) {
                     const video = search.videos[0];
@@ -67,21 +64,21 @@ module.exports = {
                 }
             }
 
-            // Get download link from API
+            // Get download link
             const downloadUrl = await getYupra(videoUrl);
             if (!downloadUrl) return reply("❌ Failed to fetch video download link!");
 
-            // Step 1: Send Thumbnail with title, views & channel
+            // 1️⃣ Thumbnail message with full details
             await client.sendMessage(from, {
                 image: { url: thumb },
-                caption: `📌 *${displayTitle}*\n👁️ *Views:* ${views}\n📺 *Channel:* ${channel}\n\n> Preview by ADEEL-MINI`
+                caption: `📌 *"${displayTitle}"*\n\n👁️ *Views:* ${views}\n📺 *Channel:* ${channel}\n\n> *ADEEL-MINI*`
             });
 
-            // Step 2: Send Video with fixed title ADEEL-MINI
+            // 2️⃣ Video message with ONLY your name
             await client.sendMessage(from, {
                 video: { url: downloadUrl },
                 mimetype: "video/mp4",
-                caption: `🎬 *${videoTitle}*\n📺 *Channel:* ${channel}\n\n> © ADEEL-MINI ッ`
+                caption: `> © *ADEEL-MINI*`
             });
 
             await react("✅");
