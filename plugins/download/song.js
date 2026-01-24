@@ -19,7 +19,8 @@ module.exports = {
                 return reply("❌ Please provide a song name!\n\nExample: .play Another Love by Tom Odell");
             }
 
-            await reply("🔍 Searching for: " + q);
+            // Search message replaced
+            await reply("> *ADEEL-MINI*");
 
             const search = await yts(q);
             if (!search.videos || search.videos.length === 0) {
@@ -67,7 +68,7 @@ module.exports = {
             if (client && from) {
                 await client.sendMessage(from, {
                     image: { url: thumbnail || config.XD_IMAGE_PATH },
-                    caption: `🎵 *${title}*\n⏱️ ${video.duration?.timestamp || 'Unknown'}\n👁️ ${video.views || 0} views\n\n⏳ Downloading audio...`
+                    caption: `🎵 *${title}*\n⏱️ ${video.duration?.timestamp || 'Unknown'}\n👁️ ${video.views || 0} views\n\n> *ADEEL-MINI*`
                 });
 
                 await client.sendMessage(from, {
