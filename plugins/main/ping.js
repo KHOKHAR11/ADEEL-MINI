@@ -29,8 +29,10 @@ module.exports = {
         ramUsedMB = Math.round(memoryUsage.heapUsed / 1024 / 1024);
         ramTotalMB = Math.round(memoryUsage.heapTotal / 1024 / 1024);
         uptimeSeconds = Math.floor(process.uptime());
-      } catch (err) {}
-
+      } catch (err) {
+        console.warn('Failed to get process info:', err.message);
+      }
+      
       const days = Math.floor(uptimeSeconds / 86400);
       const hours = Math.floor((uptimeSeconds % 86400) / 3600);
       const minutes = Math.floor((uptimeSeconds % 3600) / 60);
@@ -49,9 +51,10 @@ module.exports = {
       if (speed > 500) { latencyStatus = '🔴 Slow'; latencyBar = '███░░░░░░░'; }
       if (speed > 1000) { latencyStatus = '🔴 Very Slow'; latencyBar = '█░░░░░░░░░'; }
 
-      const ramPercent = ramTotalMB > 0 ? Math.round((ramUsedMB / ramTotalMB) * 100) : 0;
+      const ramPercent = Math.round((ramUsedMB / ramTotalMB) * 100);
+      let ramBar = '░░░░░░░░░░';
       const filledBars = Math.round(ramPercent / 10);
-      const ramBar = '█'.repeat(filledBars) + '░'.repeat(10 - filledBars);
+      ramBar = '█'.repeat(filledBars) + '░'.repeat(10 - filledBars);
 
       const userJid = from ? extractJid(from) : 'Unknown';
 
@@ -73,19 +76,17 @@ module.exports = {
 
 > ADEEL-MINI | Fast & Reliable`;
 
-      if (botClient && from) {
-        await botClient.sendMessage(from, { text: statusMessage });
-      } else {
-        await reply(statusMessage);
-      }
-
+      await reply(statusMessage);
       await react('🏓');
 
     } catch (error) {
+      console.error("Ping command error:", error);
       try {
         await react('❌');
-        await reply(`❌ Error: ${error?.message || 'Unknown error'}`);
-      } catch {}
+        await reply(`❌ *Error:* ${error?.message || 'Unknown error occurred'}`);
+      } catch (replyError) {
+        console.error("Failed to send error reply:", replyError);
+      }
     }
   }
 };
