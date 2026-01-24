@@ -55,7 +55,7 @@ module.exports = {
 ┃  .antigroup whitelist
 ╰━━━━━━━━━━━━━━━╯
 
-> ADEEL-MINI`);
+> Zaynix-PRIME`);
       }
       
       if (action === "status") {
@@ -102,6 +102,54 @@ ${list}
         }
         if (!settings.whitelist?.includes(jid)) {
           return reply("⚠️ This group is not in whitelist!");
+        }
+        settings.whitelist = settings.whitelist.filter(g => g !== jid);
+        saveAntiGroupSettings(settings);
+        await react("✅");
+        return reply(`✅ Group removed from whitelist!\nJID: ${jid}`);
+      }
+      
+      if (action === "on") {
+        settings.enabled = true;
+        saveAntiGroupSettings(settings);
+        await react("✅");
+        return reply(`╭━━━━━━━━━━━━━━━╮
+┃  🛡️ *ANTI-GROUP ENABLED*
+┃━━━━━━━━━━━━━━━
+┃  ✅ Protection: ON
+┃  ⚠️ Bot will leave unknown
+┃  groups automatically
+╰━━━━━━━━━━━━━━━╯
+
+> ADEEL-MINI`);
+      }
+      
+      if (action === "off") {
+        settings.enabled = false;
+        saveAntiGroupSettings(settings);
+        await react("✅");
+        return reply(`╭━━━━━━━━━━━━━━━╮
+┃  🛡️ *ANTI-GROUP DISABLED*
+┃━━━━━━━━━━━━━━━
+┃  ❌ Protection: OFF
+╰━━━━━━━━━━━━━━━╯
+
+> ADEEL-MINI`);
+      }
+      
+    } catch (error) {
+      console.error("AntiGroup error:", error);
+      return reply(`❌ Error: ${error.message}`);
+    }
+  }
+};
+
+module.exports.checkAntiGroup = (groupId) => {
+  const settings = loadAntiGroupSettings();
+  if (!settings.enabled) return { leave: false };
+  if (settings.whitelist?.includes(groupId)) return { leave: false };
+  return { leave: true };
+};
         }
         settings.whitelist = settings.whitelist.filter(g => g !== jid);
         saveAntiGroupSettings(settings);
