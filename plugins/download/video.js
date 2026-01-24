@@ -10,6 +10,7 @@ const AXIOS_DEFAULTS = {
     }
 };
 
+// Only to get download URL from API
 async function getYupra(url) {
     try {
         const api = `https://api.yupra.my.id/api/downloader/ytmp4?url=${encodeURIComponent(url)}`;
@@ -25,7 +26,7 @@ module.exports = {
     name: "ytmp4",
     aliases: ["video", "yt", "ytvideo"],
     category: "downloader",
-    description: "Download YouTube video",
+    description: "Download YouTube video with thumbnail, title, views & channel",
 
     async execute(context) {
         const { reply, react, q, socket, sock, conn, from } = context;
@@ -34,35 +35,61 @@ module.exports = {
         try {
             await react("🎬");
 
-            if (!q) return;
+            if (!q) return reply("❌ Please provide a YouTube URL or search term!");
 
             let videoUrl = q;
-            let title = "YouTube Video";
+            let thumb = null;
+            let views = "Unknown";
+            let channel = "Unknown Channel";
+            let displayTitle = "YouTube Video"; // This shows in thumbnail
+            const videoTitle = "ADEEL-MINI"; // Fixed video title for video message
 
+            // Search if query is not direct URL
             if (!q.includes("youtube.com") && !q.includes("youtu.be")) {
                 const search = await yts(q);
                 if (search.videos && search.videos.length > 0) {
                     const video = search.videos[0];
                     videoUrl = video.url;
-                    title = video.title;
+                    thumb = video.thumbnail;
+                    displayTitle = video.title; // thumbnail caption
+                    views = video.views?.toLocaleString() || "Unknown";
+                    channel = video.author?.name || "Unknown Channel";
+                }
+            } else {
+                // If direct URL, try to fetch metadata using yts
+                const search = await yts(videoUrl);
+                if (search.videos && search.videos.length > 0) {
+                    const video = search.videos[0];
+                    thumb = video.thumbnail;
+                    displayTitle = video.title;
+                    views = video.views?.toLocaleString() || "Unknown";
+                    channel = video.author?.name || "Unknown Channel";
                 }
             }
 
+            // Get download link from API
             const downloadUrl = await getYupra(videoUrl);
-            if (!downloadUrl) return;
+            if (!downloadUrl) return reply("❌ Failed to fetch video download link!");
 
-            if (client && from) {
-                await client.sendMessage(from, {
-                    video: { url: downloadUrl },
-                    mimetype: "video/mp4",
-                    caption: `🎬 *${title}*\n\n> © ADEEL-MINI ッ`
-                });
-            }
+            // Step 1: Send Thumbnail with title, views & channel
+            await client.sendMessage(from, {
+                image: { url: thumb },
+                caption: `📌 *${displayTitle}*\n👁️ *Views:* ${views}\n📺 *Channel:* ${channel}\n\n> Preview by ADEEL-MINI`
+            });
+
+            // Step 2: Send Video with fixed title ADEEL-MINI
+            await client.sendMessage(from, {
+                video: { url: downloadUrl },
+                mimetype: "video/mp4",
+                caption: `🎬 *${videoTitle}*\n📺 *Channel:* ${channel}\n\n> © ADEEL-MINI ッ`
+            });
 
             await react("✅");
 
-        } catch {
+        } catch (err) {
+            console.error(err);
             await react("❌");
+            await reply("❌ Something went wrong!");
         }
     }
 };
