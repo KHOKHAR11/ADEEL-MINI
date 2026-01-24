@@ -67,7 +67,7 @@ module.exports = {
             if (client && from) {
                 await client.sendMessage(from, {
                     image: { url: thumbnail || config.XD_IMAGE_PATH },
-                    caption: `🎵 *${title}*\n⏱️ ${video.duration?.timestamp || 'Unknown'}\n👁️ ${video.views || 0} views\n\n> *ADEEL-MINI`
+                    caption: `🎵 *${title}*\n⏱️ ${video.duration?.timestamp || 'Unknown'}\n👁️ ${video.views || 0} views\n\n> *ADEEL-MINI*`
                 });
 
                 await client.sendMessage(from, {
