@@ -1,6 +1,8 @@
 const config = require("../../config");
 const { extractJid } = require("../../lib/msg");
 
+const latencyEmojis = ['⚡','🔥','🚀','💨','🎯','🎉','🌟','💥','🕐','🔹'];
+
 module.exports = {
   name: 'ping',
   aliases: ['speed', 'pong', 'test', 'latency'],
@@ -8,71 +10,67 @@ module.exports = {
   category: 'main',
 
   async execute(context) {
-    const { sock, socket, conn, client, from, reply, react, msg, pushName, getUserConfig } = context;
+    const { sock, socket, conn, client, from, reply, react, getUserConfig } = context;
     const botClient = socket || sock || conn || client;
-    
+
     try {
       const start = Date.now();
       await react('⏳');
-      
+
+      // Measure response time fast
       const speed = Date.now() - start;
+
+      // User config for prefix
       const user = await getUserConfig();
       const prefix = user.PREFIX || config.PREFIX || ".";
 
-      let ramUsedMB = 0;
-      let ramTotalMB = 0;
-      let uptimeSeconds = 0;
-      let nodeVersion = process.version || 'Unknown';
-      
+      // System info
+      let ramUsedMB = 0, ramTotalMB = 0, uptimeSeconds = 0, nodeVersion = process.version || 'Unknown';
       try {
-        const memoryUsage = process.memoryUsage();
-        ramUsedMB = Math.round(memoryUsage.heapUsed / 1024 / 1024);
-        ramTotalMB = Math.round(memoryUsage.heapTotal / 1024 / 1024);
+        const mem = process.memoryUsage();
+        ramUsedMB = Math.round(mem.heapUsed / 1024 / 1024);
+        ramTotalMB = Math.round(mem.heapTotal / 1024 / 1024);
         uptimeSeconds = Math.floor(process.uptime());
-      } catch (err) {
-        console.warn('Failed to get process info:', err.message);
-      }
-      
-      const days = Math.floor(uptimeSeconds / 86400);
-      const hours = Math.floor((uptimeSeconds % 86400) / 3600);
-      const minutes = Math.floor((uptimeSeconds % 3600) / 60);
-      const seconds = uptimeSeconds % 60;
-      
-      let uptimeStr = "";
-      if (days > 0) uptimeStr += `${days}d `;
-      if (hours > 0) uptimeStr += `${hours}h `;
-      if (minutes > 0) uptimeStr += `${minutes}m `;
-      uptimeStr += `${seconds}s`;
+      } catch {}
 
-      let latencyStatus = '🟢 Excellent';
-      let latencyBar = '█████████░';
+      // Uptime formatting
+      const d = Math.floor(uptimeSeconds / 86400);
+      const h = Math.floor((uptimeSeconds % 86400) / 3600);
+      const m = Math.floor((uptimeSeconds % 3600) / 60);
+      const s = uptimeSeconds % 60;
+      const uptimeStr = `${d?d+'d ':''}${h?h+'h ':''}${m?m+'m ':''}${s}s`;
+
+      // Latency status
+      let latencyStatus = '🟢 Excellent', latencyBar = '█████████░';
       if (speed > 100) { latencyStatus = '🟡 Good'; latencyBar = '███████░░░'; }
       if (speed > 300) { latencyStatus = '🟠 Moderate'; latencyBar = '█████░░░░░'; }
       if (speed > 500) { latencyStatus = '🔴 Slow'; latencyBar = '███░░░░░░░'; }
       if (speed > 1000) { latencyStatus = '🔴 Very Slow'; latencyBar = '█░░░░░░░░░'; }
 
+      // RAM bar
       const ramPercent = Math.round((ramUsedMB / ramTotalMB) * 100);
-      let ramBar = '░░░░░░░░░░';
-      const filledBars = Math.round(ramPercent / 10);
-      ramBar = '█'.repeat(filledBars) + '░'.repeat(10 - filledBars);
+      const filled = Math.round(ramPercent / 10);
+      const ramBar = '█'.repeat(filled) + '░'.repeat(10 - filled);
 
       const userJid = from ? extractJid(from) : 'Unknown';
+      const randomEmoji = latencyEmojis[Math.floor(Math.random() * latencyEmojis.length)];
 
+      // Status message
       const statusMessage = `╭━━━━━━━━━━━━━━╮
-┃  🏓 *PONG!*
+┃  🏓 *PONG!* ${randomEmoji}
 ┃━━━━━━━━━━━━━━━━━
 ┃  ⚡ *Response:* ${speed}ms
 ┃  📊 *Latency:* ${latencyStatus}
 ┃  [${latencyBar}]
-┃━━━━━━━━━━━━━━━
+┃━━━━━━━━━━━━━━━━━
 ┃  💾 *RAM:* ${ramUsedMB}MB / ${ramTotalMB}MB
 ┃  [${ramBar}] ${ramPercent}%
-┃━━━━━━━━━━━━━━━━━━━
+┃━━━━━━━━━━━━━━━━━
 ┃  ⏱️ *Uptime:* ${uptimeStr}
 ┃  🔧 *Node:* ${nodeVersion}
 ┃  👤 *JID:* ${userJid}
 ┃  🟢 *Status:* Operational
-╰━━━━━━━━━━━━━━━━━━━╯
+╰━━━━━━━━━━━━━━━━━╯
 
 > ADEEL-MINI | Fast & Reliable`;
 
@@ -84,9 +82,7 @@ module.exports = {
       try {
         await react('❌');
         await reply(`❌ *Error:* ${error?.message || 'Unknown error occurred'}`);
-      } catch (replyError) {
-        console.error("Failed to send error reply:", replyError);
-      }
+      } catch {}
     }
   }
 };
