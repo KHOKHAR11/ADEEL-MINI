@@ -18,7 +18,7 @@ module.exports = {
     const user = await (getUserConfig ? getUserConfig() : Promise.resolve({}));
     const prefix = (user && user.PREFIX) ? user.PREFIX : (config && config.PREFIX) ? config.PREFIX : ".";
     const userName = pushName || "User";
-    const founderName = config.FOUNDER_NAME || "ADEEL";
+    const founderName = config.FOUNDER_NAME || "ADEEL-MD";
     const botName = config.BOT_NAME || "ADEEL-MINI";
 
     const uptimeSeconds = Math.floor(process.uptime());
@@ -115,7 +115,7 @@ module.exports = {
 ┃ ${prefix}jid
 ╰━━━━━━━━━━━━━━━━╯
 
-> © *${founderName}* | ${botName} ッ`;
+> © *${founderName}* | ${botName}`;
 
     const imgPath = "./data/Adeel.jpg";
     const hasImage = fs.existsSync(imgPath);
