@@ -19,9 +19,6 @@ module.exports = {
                 return reply("❌ Please provide a song name!\n\nExample: .play Another Love by Tom Odell");
             }
 
-            // Search message replaced
-            await reply("> *ADEEL-MINI*");
-
             const search = await yts(q);
             if (!search.videos || search.videos.length === 0) {
                 return reply("❌ No results found. Try a different search term.");
@@ -29,6 +26,11 @@ module.exports = {
 
             const video = search.videos[0];
             const videoUrl = video.url;
+            const duration = video.duration?.timestamp || "Unknown";
+            const views = video.views?.toLocaleString() || "Unknown";
+            const channel = video.author?.name || "Unknown Channel";
+            const title = video.title;
+            let thumbnail = video.thumbnail;
 
             const apis = [
                 `https://sarkar-apis.bandaheali.site/download/ytmp3?url=${encodeURIComponent(videoUrl)}`,
@@ -37,15 +39,12 @@ module.exports = {
             ];
 
             let downloadUrl = null;
-            let title = video.title;
-            let thumbnail = video.thumbnail;
 
             for (const apiUrl of apis) {
                 try {
                     const { data } = await axios.get(apiUrl, { timeout: 15000 });
                     if (data.success && data.result?.download_url) {
                         downloadUrl = data.result.download_url;
-                        title = data.result?.title || title;
                         thumbnail = data.result?.thumbnail || thumbnail;
                         break;
                     } else if (data.result?.downloadUrl) {
@@ -65,18 +64,19 @@ module.exports = {
                 return reply(`❌ Download failed. APIs are temporarily unavailable.\n\n🎵 *${title}*\n🔗 ${videoUrl}\n\nPlease try again later or use the link above.`);
             }
 
-            if (client && from) {
-                await client.sendMessage(from, {
-                    image: { url: thumbnail || config.XD_IMAGE_PATH },
-                    caption: `🎵 *${title}*\n⏱️ ${video.duration?.timestamp || 'Unknown'}\n👁️ ${video.views || 0} views\n\n> *ADEEL-MINI*`
-                });
+            // 1️⃣ Thumbnail with video info in desired style
+            await client.sendMessage(from, {
+                image: { url: thumbnail || config.XD_IMAGE_PATH },
+                caption: `🎵 *"${title}"*\n\n⏱️ ${duration}\n👁️ ${views} views\n📺 ${channel}\n\n> *ADEEL-MINI*`
+            });
 
-                await client.sendMessage(from, {
-                    audio: { url: downloadUrl },
-                    mimetype: "audio/mpeg",
-                    fileName: `${title}.mp3`
-                });
-            }
+            // 2️⃣ Audio message with only your name
+            await client.sendMessage(from, {
+                audio: { url: downloadUrl },
+                mimetype: "audio/mpeg",
+                fileName: `${title}.mp3`,
+                caption: `> © *ADEEL-MINI*`
+            });
 
             await react("✅");
 
