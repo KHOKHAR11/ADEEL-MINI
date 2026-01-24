@@ -8,80 +8,54 @@ module.exports = {
     async execute(context) {
         const { reply, react, q, sock, from, m } = context;
 
-        if (!q) return reply(`❌ Provide a TikTok URL`);
+        if (!q) return reply("❌ Provide a TikTok URL");
+        if (!q.includes("tiktok.com")) return reply("❌ Invalid TikTok URL");
 
         await react("🎬");
 
         try {
-            const api = `https://edith-apis.vercel.app/download/tiktok?url=${encodeURIComponent(q)}`;
+            // 🔄 SAME WORKING API (Edith v2)
+            const api = `https://edith-apis.vercel.app/download/tiktok-v2?url=${encodeURIComponent(q)}`;
             const { data } = await axios.get(api);
 
-            if (!data.status) return reply(`❌ Invalid URL`);
+            if (!data?.result?.data) return reply("❌ Failed to fetch video");
 
-            const r = data.result;
+            const v = data.result.data;
 
-            // Preview message with metadata
-            const info = `🥏 ≡ TIKTOK DOWNLOADER ≡
+            // ===== METADATA (STABLE) =====
+            const title = v.title || v.desc || "TikTok Video";
+            const author = v.author?.nickname || "Unknown";
+            const username = v.author?.unique_id || "Unknown";
 
-➠ | *Title* : ${r.description || "N/A"}
-➠ | *Region* : ${r.region || "N/A"}
-➠ | *Duration* : ${r.duration || "N/A"}
-➠ | *Url* : ${q}
+            // ===== VIDEO URL (AUTO DIRECT) =====
+            const videoUrl =
+                v.play ||        // no watermark
+                v.hdplay ||      // hd
+                v.wmplay;        // watermark fallback
+
+            if (!videoUrl) return reply("❌ Video link not found");
+
+            const caption = `🎵 *TikTok Video* 🎵
+
+👤 *User:* ${author} (@${username})
+📖 *Title:* ${title}
 
 © ADEEL-MINI`;
 
-            await sock.sendMessage(from, { text: info }, { quoted: m });
-
-            // List Menu
-            const listMessage = {
-                title: "Click Here",
-                text: "Select Format",
-                footer: "Zaynix-PRIME",
-                buttonText: "CLICK HERE",
-                sections: [
-                    {
-                        title: "TikTok Format Options",
-                        rows: [
-                            {
-                                title: "No Watermark",
-                                rowId: `.nowm ${q}`
-                            },
-                            {
-                                title: "No Watermark HD",
-                                rowId: `.nowm_hd ${q}`
-                            },
-                            {
-                                title: "With Watermark",
-                                rowId: `.wm ${q}`
-                            },
-                            {
-                                title: "Audio Only",
-                                rowId: `.audio ${q}`
-                            }
-                        ]
-                    }
-                ]
-            };
-
-            await sock.sendMessage(from, listMessage, { quoted: m });
-
-            // Button Under It
-            await sock.sendMessage(from, {
-                buttons: [
-                    {
-                        buttonId: `Adeel${Date.now()}`,
-                        buttonText: { displayText: "Adeel-md" },
-                        type: 1
-                    }
-                ],
-                text: "~ Done!"
-            }, { quoted: m });
+            await sock.sendMessage(
+                from,
+                {
+                    video: { url: videoUrl },
+                    caption: caption
+                },
+                { quoted: m }
+            );
 
             await react("✅");
 
         } catch (err) {
             await react("❌");
-            reply(`❌ ${err.message}`);
+            reply("❌ Download failed");
         }
     }
 };
