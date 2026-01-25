@@ -13,6 +13,7 @@
             --accent-gold: #ffd700; 
             --text-primary: #ffffff;
             --border-color: rgba(255, 215, 0, 0.3);
+            --gradient-gold: linear-gradient(135deg, #ffd700 0%, #ffae00 100%);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -25,7 +26,6 @@
             min-height: 100vh;
         }
 
-        /* Red Grid Background */
         .grid-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: 
@@ -60,35 +60,45 @@
             width: 100%; padding: 14px; border-radius: 12px; border: none;
             font-weight: 700; cursor: pointer; display: flex;
             align-items: center; justify-content: center; gap: 10px; transition: 0.3s;
+            font-family: 'Outfit', sans-serif;
         }
         
         .btn-primary { background: #fff; color: #800000; margin-bottom: 20px; }
 
         .code-display {
-            border: 2px dashed var(--accent-gold);
-            border-radius: 16px; padding: 20px; margin-top: 20px;
+            background: rgba(13, 17, 33, 0.4);
+            border: 1.5px dashed var(--accent-gold);
+            border-radius: 16px; padding: 25px; margin-top: 20px;
+            display: none;
         }
+        .code-display.show { display: block; }
 
         .code-value {
-            font-size: 2.5rem; font-weight: 900; letter-spacing: 5px;
+            font-size: 1.8rem; font-weight: 900; letter-spacing: 5px;
             color: var(--accent-gold); margin-bottom: 15px; display: block;
         }
 
-        /* Copy Button New Style */
-        .btn-copy {
-            background: transparent; border: 2px solid #fff; color: #fff;
-            width: auto; padding: 10px 30px; margin: 0 auto;
+        /* Zaynix Style Copy Button - Adapted for Red/Gold */
+        .btn-secondary {
+            background: transparent;
+            border: 1.5px solid var(--border-color);
+            color: var(--text-primary);
+            width: 100%;
+            margin-top: 10px;
         }
 
-        /* Golden Particles Styling */
+        .btn-secondary:hover {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+            background: rgba(255, 215, 0, 0.05);
+        }
+
         .particle {
             position: absolute; width: 3px; height: 12px;
             background: linear-gradient(to bottom, var(--accent-gold), #fff);
             pointer-events: none; border-radius: 2px; z-index: 9999;
             box-shadow: 0 0 5px var(--accent-gold);
         }
-
-        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -98,7 +108,7 @@
         <div class="header">
             <span class="logo">ADEEL-MINI</span>
             <div class="status-box">
-                <p style="color:var(--text-secondary)">System</p>
+                <p style="opacity: 0.7;">System Status</p>
                 <h2 style="color:var(--accent-gold)">STABLE</h2>
             </div>
         </div>
@@ -107,88 +117,20 @@
             <h3 style="margin-bottom:15px;"><i class="fas fa-link" style="color:var(--accent-gold)"></i> Connect Bot</h3>
             <input type="text" id="phone-number" class="input-field" placeholder="923035512967">
             
-            <button class="btn btn-primary" onclick="generateCode(event)">
+            <button class="btn btn-primary" id="pair-btn" onclick="generatePairCode(event)">
                 <i class="fas fa-key"></i> Generate Pairing Code
             </button>
 
-            <div class="code-display">
-                <span style="font-size: 0.8rem; opacity: 0.8;">YOUR CODE</span>
-                <span class="code-value" id="pair-code">ADEEL1MD</span>
+            <div id="code-display" class="code-display">
+                <span style="font-size: 0.8rem; opacity: 0.8; display: block; margin-bottom: 10px;">YOUR PAIRING CODE</span>
+                <span class="code-value" id="pair-code">--------</span>
                 
-                <button class="btn btn-copy" id="copy-btn" onclick="copyCode(event)">
+                <button type="button" class="btn btn-secondary" id="copy-btn" onclick="copyCode(event)">
                     <i class="fas fa-copy"></i> Copy Code
                 </button>
             </div>
         </div>
     </div>
-
-    <script>
-        // Tanay (Particles) Effect
-        function createParticles(x, y) {
-            for (let i = 0; i < 30; i++) {
-                const p = document.createElement('div');
-                p.classList.add('particle');
-                document.body.appendChild(p);
-
-                const angle = Math.random() * Math.PI * 2;
-                const velocity = 4 + Math.random() * 10;
-                const tx = Math.cos(angle) * 150;
-                const ty = Math.sin(angle) * 150;
-
-                p.style.left = x + 'px';
-                p.style.top = y + 'px';
-                p.style.transform = `rotate(${angle}rad)`;
-
-                const anim = p.animate([
-                    { transform: `translate(0,0) rotate(${angle}rad)`, opacity: 1 },
-                    { transform: `translate(${tx}px, ${ty}px) rotate(${angle}rad)`, opacity: 0 }
-                ], { duration: 800, easing: 'ease-out' });
-
-                anim.onfinish = () => p.remove();
-            }
-        }
-
-        function generateCode(e) {
-            createParticles(e.pageX, e.pageY);
-            // Logic for generation goes here
-        }
-
-        // Fixed Copy Function (No White Alert Page)
-        function copyCode(e) {
-            createParticles(e.pageX, e.pageY);
-            const code = document.getElementById('pair-code').textContent;
-            const btn = document.getElementById('copy-btn');
-
-            navigator.clipboard.writeText(code).then(() => {
-                // Style Change instead of Alert
-                const originalContent = btn.innerHTML;
-                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-                btn.style.backgroundColor = "rgba(255, 215, 0, 0.2)";
-                btn.style.borderColor = "var(--accent-gold)";
-                btn.style.color = "var(--accent-gold)";
-                
-                setTimeout(() => {
-                    btn.innerHTML = originalContent;
-                    btn.style.backgroundColor = "transparent";
-                    btn.style.borderColor = "#fff";
-                    btn.style.color = "#fff";
-                }, 2000);
-            });
-        }
-    </script>
-</body>
-</html>
-            </button>
-
-            <div id="code-display" class="code-display">
-                <div style="text-transform:uppercase; font-size:0.8rem; margin-bottom:10px;">Your Code</div>
-                <div class="code-value" id="pair-code">--------</div>
-                <button class="btn btn-secondary" id="copy-btn" onclick="copyCode(event)">
-                    <i class="fas fa-copy"></i> Copy Code
-                </button>
-            </div>
-        </div>
-    </main>
 
     <script>
         function createParticles(x, y) {
@@ -222,7 +164,7 @@
 
             const btn = document.getElementById('pair-btn');
             btn.disabled = true;
-            btn.innerHTML = "Generating...";
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generating...';
 
             try {
                 const res = await fetch(`/code?number=${phone}`);
@@ -239,21 +181,21 @@
             }
         }
 
-        // Fixed Copy Code Function
         function copyCode(e) {
             createParticles(e.pageX, e.pageY);
             const code = document.getElementById('pair-code').textContent;
             const btn = document.getElementById('copy-btn');
 
             navigator.clipboard.writeText(code).then(() => {
-                // Button Feedback instead of Alert
                 const originalText = btn.innerHTML;
-                btn.innerHTML = '<i class="fas fa-check" style="color:var(--accent-gold)"></i> Copied!';
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
                 btn.style.borderColor = "var(--accent-gold)";
+                btn.style.color = "var(--accent-gold)";
                 
                 setTimeout(() => {
                     btn.innerHTML = originalText;
-                    btn.style.borderColor = "#fff";
+                    btn.style.borderColor = "var(--border-color)";
+                    btn.style.color = "var(--text-primary)";
                 }, 2000);
             });
         }
