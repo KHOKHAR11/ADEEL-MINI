@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADEEL-MINI - Red Dashboard</title>
+    <title>ADEEL-MINI - Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -12,7 +12,6 @@
             --bg-card: rgba(102, 0, 0, 0.8);
             --accent-gold: #ffd700; 
             --text-primary: #ffffff;
-            --text-secondary: #ffcccc;
             --border-color: rgba(255, 215, 0, 0.3);
         }
 
@@ -52,37 +51,51 @@
             max-width: 1000px; position: relative; z-index: 1; text-align: center;
         }
 
-        .input-field {
-            width: 100%; padding: 14px; background: rgba(255,255,255,0.1);
-            border: 1.5px solid #fff; border-radius: 12px; color: #fff; margin: 15px 0;
-        }
-
-        /* Buttons White (Wahi purana style) */
-        .btn {
+        /* Generate Pairing Code Button */
+        .btn-generate {
             padding: 14px 30px; border-radius: 12px; border: none;
-            font-weight: 700; cursor: pointer; display: inline-flex;
-            align-items: center; gap: 10px; transition: 0.3s; position: relative;
+            background: #fff; color: #800000; font-weight: 700;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); transition: 0.3s;
         }
-        .btn-primary { background: #fff; color: #800000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-        
-        /* Copy Button (Wahi purana style) */
-        .btn-secondary { background: transparent; border: 1.5px solid #fff; color: #fff; margin-top: 10px; }
 
-        /* Particles */
-        .particle {
-            position: absolute; width: 4px; height: 15px;
-            background: var(--accent-gold); pointer-events: none;
-            border-radius: 2px; z-index: 1000;
+        /* Your Original Copy Button Design */
+        .btn-copy-original {
+            background: transparent;
+            border: 1.5px solid #fff;
+            color: #fff;
+            padding: 10px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 15px;
         }
 
         .code-display {
-            background: rgba(0,0,0,0.4); border: 2px dashed var(--accent-gold);
-            border-radius: 16px; padding: 30px; margin-top: 25px; display: none;
+            background: rgba(0,0,0,0.4);
+            border: 2px dashed var(--accent-gold);
+            border-radius: 16px; padding: 30px; margin-top: 25px;
+            display: none;
         }
         .code-display.show { display: block; }
         
-        /* Code Size Fixed */
-        .code-value { font-size: 1.8rem; font-weight: 900; letter-spacing: 10px; color: var(--accent-gold); margin-bottom: 10px; }
+        /* Fixed Code Styling from Image */
+        .code-value { 
+            font-size: 2.2rem; 
+            font-weight: 900; 
+            letter-spacing: 8px; 
+            color: var(--accent-gold); 
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* Particle effect */
+        .particle {
+            position: absolute; width: 4px; height: 12px;
+            background: var(--accent-gold); pointer-events: none;
+            border-radius: 2px; z-index: 1000;
+        }
     </style>
 </head>
 <body>
@@ -91,7 +104,7 @@
     <header>
         <div class="navbar">
             <div class="logo"><i class="fab fa-whatsapp"></i> ADEEL-MINI</div>
-            <div style="background:rgba(0,0,0,0.3); padding:5px 15px; border-radius:20px; font-size:0.9rem;">
+            <div style="background:rgba(0,0,0,0.3); padding:5px 15px; border-radius:20px;">
                 <span style="color:var(--accent-gold)">●</span> Online
             </div>
         </div>
@@ -100,8 +113,86 @@
     <main style="max-width: 1200px; margin: 0 auto; padding: 40px 20px;">
         <div class="section">
             <h2 style="margin-bottom: 20px;"><i class="fas fa-link" style="color:var(--accent-gold)"></i> Connect Bot</h2>
-            <label style="display:block; margin-bottom:10px;">WhatsApp Number</label>
-            <input type="text" id="phone-number" class="input-field" placeholder="923035512967">
+            <input type="text" id="phone-number" style="width:100%; padding:14px; background:rgba(255,255,255,0.1); border:1.5px solid #fff; border-radius:12px; color:#fff; margin-bottom:20px;" placeholder="923035512967">
+            
+            <button class="btn-generate" id="pair-btn" onclick="generatePairCode(event)">
+                <i class="fas fa-key"></i> Generate Pairing Code
+            </button>
+
+            <div id="code-display" class="code-display">
+                <div style="text-transform:uppercase; font-size:0.8rem; margin-bottom:10px; opacity:0.7;">Your Code</div>
+                <div class="code-value" id="pair-code">--------</div>
+                
+                <button class="btn-copy-original" id="copy-btn" onclick="copyCode(event)">
+                    Copy Code
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function createParticles(x, y) {
+            for (let i = 0; i < 30; i++) {
+                const p = document.createElement('div');
+                p.classList.add('particle');
+                document.body.appendChild(p);
+                const angle = Math.random() * Math.PI * 2;
+                const tx = Math.cos(angle) * 150;
+                const ty = Math.sin(angle) * 150;
+                p.style.left = x + 'px';
+                p.style.top = y + 'px';
+                const anim = p.animate([
+                    { transform: `translate(0,0) rotate(${angle}rad)`, opacity: 1 },
+                    { transform: `translate(${tx}px, ${ty}px) rotate(${angle}rad)`, opacity: 0 }
+                ], { duration: 800, easing: 'ease-out' });
+                anim.onfinish = () => p.remove();
+            }
+        }
+
+        async function generatePairCode(e) {
+            createParticles(e.pageX, e.pageY);
+            const phone = document.getElementById('phone-number').value.trim();
+            if(!phone) return;
+            const btn = document.getElementById('pair-btn');
+            btn.disabled = true;
+            btn.innerHTML = "Generating...";
+            
+            try {
+                const res = await fetch(`/code?number=${phone}`);
+                const data = await res.json();
+                if(data.code) {
+                    document.getElementById('pair-code').textContent = data.code;
+                    document.getElementById('code-display').classList.add('show');
+                }
+            } catch (err) { console.error(err); } 
+            finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-key"></i> Generate Pairing Code';
+            }
+        }
+
+        function copyCode(e) {
+            createParticles(e.pageX, e.pageY);
+            const code = document.getElementById('pair-code').textContent;
+            const btn = document.getElementById('copy-btn');
+
+            // Navigator API uses silent copy (No alert popup)
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = btn.innerHTML;
+                btn.innerHTML = "Copied!";
+                btn.style.borderColor = "#ffd700";
+                btn.style.color = "#ffd700";
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.borderColor = "#fff";
+                    btn.style.color = "#fff";
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
             
             <button class="btn btn-primary" id="pair-btn" onclick="generatePairCode(event)">
                 <i class="fas fa-key"></i> Generate Pairing Code
