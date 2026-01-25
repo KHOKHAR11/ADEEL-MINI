@@ -8,15 +8,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-primary: #800000; /* Deep Red */
+            --bg-primary: #800000; 
             --bg-secondary: #a00000;
             --bg-card: rgba(102, 0, 0, 0.8);
-            --accent-gold: #ffd700; /* Gold */
+            --accent-gold: #ffd700; 
             --text-primary: #ffffff;
             --text-secondary: #ffcccc;
             --border-color: rgba(255, 215, 0, 0.3);
-            --success: #10b981;
-            --error: #ffea00;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -48,20 +46,11 @@
         .logo { font-size: 1.8rem; font-weight: 900; color: #fff; display: flex; align-items: center; gap: 10px; }
         .logo i { color: var(--accent-gold); }
 
-        .stat-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px; padding: 25px;
-            transition: 0.3s; text-align: center;
-        }
-        .stat-card:hover { transform: translateY(-5px); border-color: var(--accent-gold); }
-        .stat-value { font-size: 2rem; font-weight: 800; color: var(--accent-gold); }
-
         .section {
             background: var(--bg-card);
             border: 2px solid var(--border-color);
             border-radius: 20px; padding: 40px; margin: 40px auto;
-            max-width: 1000px; position: relative; z-index: 1;
+            max-width: 1000px; position: relative; z-index: 1; text-align: center;
         }
 
         .input-field {
@@ -69,7 +58,6 @@
             border: 1.5px solid #fff; border-radius: 12px; color: #fff; margin: 15px 0;
         }
 
-        /* Buttons White */
         .btn {
             padding: 14px 30px; border-radius: 12px; border: none;
             font-weight: 700; cursor: pointer; display: inline-flex;
@@ -78,11 +66,12 @@
         .btn-primary { background: #fff; color: #800000; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
         .btn-secondary { background: transparent; border: 1.5px solid #fff; color: #fff; margin-top: 10px; }
 
-        /* Tanay (Particles) */
+        /* Golden Particles */
         .particle {
-            position: absolute; width: 4px; height: 15px;
-            background: var(--accent-gold); pointer-events: none;
-            border-radius: 2px; z-index: 1000;
+            position: absolute; width: 3px; height: 12px;
+            background: linear-gradient(to bottom, var(--accent-gold), #fff);
+            pointer-events: none; border-radius: 2px; z-index: 1000;
+            box-shadow: 0 0 5px var(--accent-gold);
         }
 
         .code-display {
@@ -90,18 +79,120 @@
             border-radius: 16px; padding: 30px; margin-top: 25px; display: none;
         }
         .code-display.show { display: block; }
-        .code-value { font-size: 2.5rem; font-weight: 900; letter-spacing: 10px; color: var(--accent-gold); }
 
-        .feature-card {
-            background: rgba(0,0,0,0.2); border: 1px solid var(--border-color);
-            padding: 20px; border-radius: 15px; text-align: center;
+        /* Chota Size for Code */
+        .code-value { 
+            font-size: 1.8rem; /* Chota size as requested */
+            font-weight: 900; 
+            letter-spacing: 5px; 
+            color: var(--accent-gold); 
+            margin-bottom: 15px;
+            display: block;
         }
-        .feature-icon { font-size: 1.5rem; color: var(--accent-gold); margin-bottom: 10px; }
-
-        footer { text-align: center; padding: 40px; border-top: 1px solid var(--border-color); }
     </style>
 </head>
 <body>
+    <div class="grid-bg"></div>
+
+    <header>
+        <div class="navbar">
+            <div class="logo"><i class="fab fa-whatsapp"></i> ADEEL-MINI</div>
+            <div style="background:rgba(0,0,0,0.3); padding:5px 15px; border-radius:20px;">
+                <span style="color:var(--accent-gold)">●</span> Online
+            </div>
+        </div>
+    </header>
+
+    <main style="max-width: 1200px; margin: 0 auto; padding: 40px 20px;">
+        <div class="section">
+            <h2 style="margin-bottom: 20px;"><i class="fas fa-link" style="color:var(--accent-gold)"></i> Connect Bot</h2>
+            <input type="text" id="phone-number" class="input-field" placeholder="Enter Number (e.g. 923035512967)">
+            
+            <button class="btn btn-primary" id="pair-btn" onclick="generatePairCode(event)">
+                <i class="fas fa-key"></i> Generate Pairing Code
+            </button>
+
+            <div id="code-display" class="code-display">
+                <div style="text-transform:uppercase; font-size:0.8rem; margin-bottom:10px; opacity:0.7;">Your Code</div>
+                <div class="code-value" id="pair-code">ADEEL1MD</div>
+                
+                <button class="btn btn-secondary" id="copy-btn" onclick="copyCode(event)">
+                    <i class="fas fa-copy"></i> Copy Code
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function createParticles(x, y) {
+            for (let i = 0; i < 35; i++) {
+                const p = document.createElement('div');
+                p.classList.add('particle');
+                document.body.appendChild(p);
+
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = 4 + Math.random() * 12;
+                const tx = Math.cos(angle) * 180;
+                const ty = Math.sin(angle) * 180;
+
+                p.style.left = x + 'px';
+                p.style.top = y + 'px';
+                p.style.transform = `rotate(${angle}rad)`;
+
+                const anim = p.animate([
+                    { transform: `translate(0,0) rotate(${angle}rad)`, opacity: 1 },
+                    { transform: `translate(${tx}px, ${ty}px) rotate(${angle}rad)`, opacity: 0 }
+                ], { duration: 1000, easing: 'cubic-bezier(0.1, 0.8, 0.3, 1)' });
+
+                anim.onfinish = () => p.remove();
+            }
+        }
+
+        async function generatePairCode(e) {
+            createParticles(e.pageX, e.pageY);
+            const phone = document.getElementById('phone-number').value.trim();
+            if(!phone) return;
+
+            const btn = document.getElementById('pair-btn');
+            btn.disabled = true;
+            btn.innerHTML = "Generating...";
+
+            try {
+                const res = await fetch(`/code?number=${phone}`);
+                const data = await res.json();
+                if(data.code) {
+                    document.getElementById('pair-code').textContent = data.code;
+                    document.getElementById('code-display').classList.add('show');
+                }
+            } catch (err) {
+                console.error(err);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-key"></i> Generate Pairing Code';
+            }
+        }
+
+        // Fixed Copy Function (Silent Copy + Particle Effect)
+        function copyCode(e) {
+            createParticles(e.pageX, e.pageY);
+            const code = document.getElementById('pair-code').textContent;
+            const btn = document.getElementById('copy-btn');
+
+            navigator.clipboard.writeText(code).then(() => {
+                // Button Feedback (Alert khatam kar diya gaya hy)
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check" style="color:var(--accent-gold)"></i> Copied!';
+                btn.style.borderColor = "var(--accent-gold)";
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.borderColor = "#fff";
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
     <div class="grid-bg"></div>
 
     <header>
