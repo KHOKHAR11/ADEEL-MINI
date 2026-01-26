@@ -1,419 +1,357 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ADEEL-MINI - Dashboard</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<style>
-:root {
-    --bg-primary:#800000;
-    --bg-card:rgba(102,0,0,.8);
-    --accent-gold:#ffd700;
-    --text-primary:#fff;
-    --border-color:rgba(255,215,0,.3);
-}
-
-*{margin:0;padding:0;box-sizing:border-box}
-
-body{
-    font-family:'Outfit',sans-serif;
-    background:var(--bg-primary);
-    color:var(--text-primary);
-    min-height:100vh;
-    overflow-x:hidden;
-}
-
-.grid-bg{
-    position:fixed;
-    inset:0;
-    background-image:
-        linear-gradient(rgba(255,0,0,.1) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(255,0,0,.1) 1px,transparent 1px);
-    background-size:50px 50px;
-    z-index:0;
-    pointer-events:none;
-}
-
-header{
-    background:rgba(128,0,0,.9);
-    border-bottom:2px solid var(--accent-gold);
-    padding:20px 0;
-    position:sticky;
-    top:0;
-    z-index:100;
-}
-
-.navbar{
-    max-width:1200px;
-    margin:auto;
-    padding:0 24px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-
-.logo{
-    font-size:1.8rem;
-    font-weight:900;
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-.logo i{color:var(--accent-gold)}
-
-main{
-    max-width:1200px;
-    margin:auto;
-    padding:40px 20px;
-    position:relative;
-    z-index:1;
-}
-
-.section{
-    background:var(--bg-card);
-    border:2px solid var(--border-color);
-    border-radius:20px;
-    padding:40px;
-    text-align:center;
-}
-
-input{
-    width:100%;
-    padding:14px;
-    background:rgba(255,255,255,.1);
-    border:1.5px solid #fff;
-    border-radius:12px;
-    color:#fff;
-    margin-bottom:20px;
-    outline:none;
-}
-
-.btn-generate{
-    padding:14px 30px;
-    border-radius:12px;
-    border:none;
-    background:#fff;
-    color:#800000;
-    font-weight:700;
-    cursor:pointer;
-    display:inline-flex;
-    align-items:center;
-    gap:10px;
-}
-
-.btn-copy-original{
-    background:transparent;
-    border:1.5px solid #fff;
-    color:#fff;
-    padding:10px 25px;
-    border-radius:10px;
-    font-weight:600;
-    cursor:pointer;
-    margin-top:15px;
-}
-
-.code-display{
-    background:rgba(0,0,0,.4);
-    border:2px dashed var(--accent-gold);
-    border-radius:16px;
-    padding:30px;
-    margin-top:25px;
-    display:none;
-}
-.code-display.show{display:block}
-
-.code-value{
-    font-size:2.2rem;
-    font-weight:900;
-    letter-spacing:8px;
-    color:var(--accent-gold);
-}
-
-/* particles */
-.particle{
-    position:absolute;
-    width:4px;
-    height:12px;
-    background:var(--accent-gold);
-    border-radius:2px;
-    pointer-events:none;
-    z-index:9999;
-}
-</style>
-</head>
-
-<body>
-<div class="grid-bg"></div>
-
-<header>
-    <div class="navbar">
-        <div class="logo"><i class="fab fa-whatsapp"></i> ADEEL-MINI</div>
-        <div style="background:rgba(0,0,0,.3);padding:5px 15px;border-radius:20px">
-            <span style="color:var(--accent-gold)">●</span> Online
-        </div>
-    </div>
-</header>
-
-<main>
-<div class="section">
-    <h2><i class="fas fa-link" style="color:var(--accent-gold)"></i> Connect Bot</h2>
-
-    <input id="phone-number" type="text" placeholder="923035512967">
-
-    <!-- ORIGINAL BUTTON -->
-    <button class="btn-generate" id="pair-btn" onclick="generatePairCode(event)">
-        <i class="fas fa-key"></i> Generate Pairing Code
-    </button>
-
-    <div id="code-display" class="code-display">
-        <div style="font-size:.8rem;opacity:.7">Your Code</div>
-        <div class="code-value" id="pair-code">--------</div>
-
-        <!-- ORIGINAL COPY BUTTON -->
-        <button class="btn-copy-original" id="copy-btn" onclick="copyCode(event)">
-            Copy Code
-        </button>
-    </div>
-</div>
-</main>
-
-<script>
-function createParticles(x,y){
-    for(let i=0;i<30;i++){
-        const p=document.createElement('div');
-        p.className='particle';
-        document.body.appendChild(p);
-
-        const a=Math.random()*Math.PI*2;
-        const tx=Math.cos(a)*150;
-        const ty=Math.sin(a)*150;
-
-        p.style.left=x+'px';
-        p.style.top=y+'px';
-
-        const anim=p.animate([
-            {transform:'translate(0,0)',opacity:1},
-            {transform:`translate(${tx}px,${ty}px)`,opacity:0}
-        ],{duration:800,easing:'ease-out'});
-
-        anim.onfinish=()=>p.remove();
-    }
-}
-
-async function generatePairCode(e){
-    createParticles(e.pageX,e.pageY);
-
-    const phone=document.getElementById('phone-number').value.trim();
-    if(!phone) return;
-
-    const btn=document.getElementById('pair-btn');
-    btn.disabled=true;
-    btn.innerHTML="Generating...";
-
-    try{
-        const res=await fetch(`/code?number=${phone}`);
-        const data=await res.json();
-        if(data.code){
-            document.getElementById('pair-code').textContent=data.code;
-            document.getElementById('code-display').classList.add('show');
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADEEL-MINI - WhatsApp Pairing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #800000; /* Maroon */
+            --bg-secondary: #660000;
+            --bg-card: rgba(102, 0, 0, 0.9);
+            --accent-gold: #ffd700; /* Gold */
+            --text-primary: #ffffff;
+            --text-secondary: #f0f0f0;
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --border-color: rgba(255, 215, 0, 0.3);
+            --success: #ffd700;
+            --error: #ff4d4d;
+            --gradient: linear-gradient(135deg, #ffd700 0%, #ffcc00 100%);
         }
-    }catch(err){
-        console.error(err);
-    }finally{
-        btn.disabled=false;
-        btn.innerHTML='<i class="fas fa-key"></i> Generate Pairing Code';
-    }
-}
 
-function copyCode(e){
-    createParticles(e.pageX,e.pageY);
-    const code=document.getElementById('pair-code').textContent;
-    const btn=document.getElementById('copy-btn');
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    navigator.clipboard.writeText(code).then(()=>{
-        const old=btn.innerHTML;
-        btn.innerHTML="Copied!";
-        setTimeout(()=>btn.innerHTML=old,2000);
-    });
-}
-</script>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
 
-</body>
-</html>            margin-bottom: 22px;
+        .grid-bg {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 215, 0, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 215, 0, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 480px;
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .logo-box {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 2.5rem;
+            color: #800000; /* Maroon text on Gold icon */
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            color: var(--accent-gold);
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--accent-gold);
+            font-size: 0.9rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1.5px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
             outline: none;
+            border-color: var(--accent-gold);
+            background: rgba(0, 0, 0, 0.4);
         }
 
-        .btn-generate {
-            padding: 14px 32px;
-            border-radius: 14px;
+        .btn {
+            width: 100%;
+            padding: 15px;
             border: none;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: var(--accent-gold);
+            color: #800000;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid #fff;
+            color: #fff;
+            margin-top: 15px;
+        }
+
+        .btn-secondary:hover {
             background: #fff;
             color: #800000;
-            font-weight: 800;
-            font-size: 1rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.4);
-        }
-
-        .btn-generate:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
         }
 
         .code-display {
-            background: rgba(0,0,0,0.45);
+            background: rgba(0, 0, 0, 0.3);
             border: 2px dashed var(--accent-gold);
-            border-radius: 18px;
-            padding: 28px;
-            margin-top: 30px;
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 24px;
             display: none;
         }
 
-        .code-display.show {
-            display: block;
-        }
+        .code-display.show { display: block; }
 
         .code-value {
             font-size: 2.2rem;
             font-weight: 900;
             letter-spacing: 8px;
             color: var(--accent-gold);
-            margin: 10px 0 18px;
+            margin-bottom: 10px;
         }
 
-        .btn-copy {
-            background: transparent;
-            border: 2px solid #fff;
+        .code-timer {
             color: #fff;
-            padding: 10px 26px;
-            border-radius: 12px;
-            font-weight: 700;
-            cursor: pointer;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            opacity: 0.8;
         }
 
-        /* PARTICLES */
-        .particle {
-            position: absolute;
-            width: 4px;
-            height: 12px;
-            background: var(--accent-gold);
-            border-radius: 2px;
-            pointer-events: none;
-            z-index: 9999;
+        .alert {
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: none;
+            font-size: 0.9rem;
+            font-weight: 600;
         }
+
+        .alert.show { display: flex; align-items: center; gap: 8px; }
+        .alert-error { background: rgba(255, 0, 0, 0.2); border: 1px solid var(--error); color: #ffcccc; }
+        .alert-success { background: rgba(255, 215, 0, 0.2); border: 1px solid var(--accent-gold); color: #fff; }
+
+        .info-box {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 24px;
+            text-align: left;
+        }
+
+        .info-box h3 { color: var(--accent-gold); font-size: 1rem; margin-bottom: 10px; }
+        .info-box ol { color: #f0f0f0; padding-left: 20px; font-size: 0.85rem; line-height: 1.6; }
+
+        .back-link {
+            display: inline-block;
+            color: #fff;
+            text-decoration: none;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(128, 0, 0, 0.3);
+            border-top-color: #800000;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
-
 <body>
     <div class="grid-bg"></div>
 
-    <header>
-        <div class="navbar">
-            <div class="logo">
-                <i class="fab fa-whatsapp"></i> ADEEL-MINI
+    <div class="container">
+        <div class="card">
+            <div class="logo-box">
+                <i class="fab fa-whatsapp"></i>
             </div>
-            <div style="background:rgba(0,0,0,0.3); padding:6px 16px; border-radius:20px;">
-                <span style="color:var(--accent-gold)">●</span> Online
-            </div>
-        </div>
-    </header>
 
-    <main>
-        <div class="section">
-            <h2><i class="fas fa-link" style="color:var(--accent-gold)"></i> Connect Bot</h2>
+            <h1>ADEEL-MINI</h1>
+            <p class="subtitle">Connect your WhatsApp bot in seconds</p>
 
-            <input id="phone-number" type="text" placeholder="923035512967">
+            <form id="pairForm" onsubmit="handleSubmit(event)">
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-phone"></i> Phone Number</label>
+                    <input type="text" class="input-field" id="phoneNumber" placeholder="923035512967" required />
+                </div>
 
-            <button id="pair-btn" class="btn-generate" onclick="generatePairCode(event)">
-                <i class="fas fa-key"></i> Generate Pairing Code
-            </button>
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    <i class="fas fa-key"></i> Generate Pairing Code
+                </button>
+            </form>
 
-            <div id="code-display" class="code-display">
-                <div style="opacity:0.7; font-size:0.85rem;">YOUR CODE</div>
-                <div id="pair-code" class="code-value">--------</div>
-                <button id="copy-btn" class="btn-copy" onclick="copyCode(event)">
-                    Copy Code
+            <div class="code-display" id="codeDisplay">
+                <div style="font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 8px;">YOUR CODE</div>
+                <div class="code-value" id="pairingCode">--------</div>
+                <div class="code-timer" id="codeTimer">Expires in 60 seconds</div>
+                <button type="button" class="btn btn-secondary" onclick="copyCode()" id="copyBtn">
+                    <i class="fas fa-copy"></i> Copy Code
                 </button>
             </div>
+
+            <div class="alert alert-error" id="errorAlert"><i class="fas fa-times-circle"></i> <span id="errorMessage"></span></div>
+            <div class="alert alert-success" id="successAlert"><i class="fas fa-check-circle"></i> <span id="successMessage"></span></div>
+
+            <div class="info-box">
+                <h3><i class="fas fa-info-circle"></i> Instructions</h3>
+                <ol>
+                    <li>Open WhatsApp → Linked Devices</li>
+                    <li>Tap 'Link a Device' → 'Link with phone number'</li>
+                    <li>Enter the 8-digit code shown above</li>
+                </ol>
+            </div>
+
+            <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
         </div>
-    </main>
+    </div>
 
     <script>
-        function createParticles(x, y) {
-            for (let i = 0; i < 25; i++) {
-                const p = document.createElement('div');
-                p.className = 'particle';
-                document.body.appendChild(p);
+        // Scripts from original file maintained
+        const form = document.getElementById('pairForm');
+        const phoneInput = document.getElementById('phoneNumber');
+        const submitBtn = document.getElementById('submitBtn');
+        const codeDisplay = document.getElementById('codeDisplay');
+        const pairingCode = document.getElementById('pairingCode');
+        const codeTimer = document.getElementById('codeTimer');
+        const errorAlert = document.getElementById('errorAlert');
+        const successAlert = document.getElementById('successAlert');
 
-                const angle = Math.random() * Math.PI * 2;
-                const tx = Math.cos(angle) * 140;
-                const ty = Math.sin(angle) * 140;
+        let timerInterval = null;
 
-                p.style.left = x + 'px';
-                p.style.top = y + 'px';
-
-                const anim = p.animate([
-                    { transform: 'translate(0,0)', opacity: 1 },
-                    { transform: `translate(${tx}px, ${ty}px)`, opacity: 0 }
-                ], { duration: 800, easing: 'ease-out' });
-
-                anim.onfinish = () => p.remove();
-            }
+        function startTimer(seconds) {
+            if (timerInterval) clearInterval(timerInterval);
+            let remaining = seconds;
+            timerInterval = setInterval(() => {
+                remaining--;
+                if (remaining <= 0) {
+                    clearInterval(timerInterval);
+                    codeTimer.textContent = 'Code expired';
+                } else {
+                    codeTimer.textContent = `Expires in ${remaining} seconds`;
+                }
+            }, 1000);
         }
 
-        async function generatePairCode(e) {
-            createParticles(e.pageX, e.pageY);
+        function copyCode() {
+            const code = pairingCode.textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = document.getElementById('copyBtn');
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Copy Code'; }, 2000);
+            });
+        }
 
-            const phone = document.getElementById('phone-number').value.trim();
-            if (!phone) {
-                alert("Number daalo");
-                return;
-            }
+        async function handleSubmit(e) {
+            e.preventDefault();
+            const phone = phoneInput.value.replace(/[^0-9]/g, '');
+            if (phone.length < 10) return;
 
-            const btn = document.getElementById('pair-btn');
-            btn.disabled = true;
-            btn.innerHTML = "Generating...";
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<div class="spinner"></div> Processing...';
 
             try {
-                const res = await fetch(`/code?number=${phone}`);
-                const data = await res.json();
-
+                const response = await fetch(`/code?number=${phone}`);
+                const data = await response.json();
                 if (data.code) {
-                    document.getElementById('pair-code').textContent = data.code;
-                    document.getElementById('code-display').classList.add('show');
+                    pairingCode.textContent = data.code;
+                    codeDisplay.classList.add('show');
+                    startTimer(60);
                 }
-            } catch (e) {
-                alert("Server error");
+            } catch (err) {
+                console.error(err);
             } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-key"></i> Generate Pairing Code';
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-key"></i> Generate Pairing Code';
             }
-        }
-
-        function copyCode(e) {
-            createParticles(e.pageX, e.pageY);
-
-            const code = document.getElementById('pair-code').textContent;
-            const btn = document.getElementById('copy-btn');
-
-            navigator.clipboard.writeText(code).then(() => {
-                btn.textContent = "Copied!";
-                btn.style.color = "var(--accent-gold)";
-                btn.style.borderColor = "var(--accent-gold)";
-
-                setTimeout(() => {
-                    btn.textContent = "Copy Code";
-                    btn.style.color = "#fff";
-                    btn.style.borderColor = "#fff";
-                }, 2000);
-            });
         }
     </script>
 </body>
