@@ -63,14 +63,14 @@ module.exports = {
   GROUP_INVITE_LINK:
     process.env.GROUP_INVITE_LINK ||
     "https://chat.whatsapp.com/Lgzkk6HHuZICvYFMigyFrZ?mode=wwt",
-  PM2_NAME: process.env.PM2_NAME || "Zaynix-PRIME",
+  PM2_NAME: process.env.PM2_NAME || "ADEEL-MINI",
   
-  BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN || "8174600854:AAHE65a8mCURJc79K0gvmMb5Se16yxa8wqQ",
-  TELEGRAM_OWNER_ID: process.env.TELEGRAM_OWNER_ID || "8174600854",
+  BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN || "8573095889:AAFnvhryIkSQjcDjXCTjt8scyXQ1dDh9wwE",
+  TELEGRAM_OWNER_ID: process.env.TELEGRAM_OWNER_ID || "5242940110",
   ALLOWED_USERS: process.env.TELEGRAM_ALLOWED_USERS
     ? process.env.TELEGRAM_ALLOWED_USERS.split(",")
-    : ["8174600854"],
-  CHAT_ID: process.env.TELEGRAM_CHAT_ID || "8174600854",
+    : ["5242940110"],
+  CHAT_ID: process.env.TELEGRAM_CHAT_ID || "5242940110",
 
   SESSION_SAFETY: {
     RATE_LIMIT_DELAY: parseInt(process.env.RATE_LIMIT_DELAY || "1500", 10),
