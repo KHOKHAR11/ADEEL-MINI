@@ -1,108 +1,291 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🤖 Admin Panel - ADEEL-MINI</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --bg-primary: #800000; /* Deep Red */
-            --bg-secondary: #a00000;
-            --bg-card: rgba(102, 0, 0, 0.9);
-            --accent-gold: #ffd700; /* Gold */
-            --text-primary: #ffffff;
-            --text-secondary: #ffcccc;
-            --border-color: rgba(255, 215, 0, 0.3);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>👑 ADEEL-MINI Admin Panel</title>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
-            padding: 20px;
-            overflow-x: hidden;
-        }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-        /* Red Grid Effect */
-        .grid-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: 
-                linear-gradient(rgba(255, 0, 0, 0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 0, 0, 0.1) 1px, transparent 1px);
-            background-size: 50px 50px; z-index: -1;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            position: relative;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-        }
-        
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-        
-        .stat-card {
-            background: var(--bg-card);
-            padding: 20px;
-            border-radius: 15px;
-            border: 1px solid var(--border-color);
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: 0.3s;
-        }
+<style>
+:root{
+--red:#7a0000;
+--dark:#4d0000;
+--gold:#ffd700;
+--glass:rgba(255,255,255,.08);
+}
 
-        .stat-card:hover { transform: translateY(-5px); border-color: var(--accent-gold); }
-        
-        .stat-card h3 {
-            color: var(--accent-gold);
-            font-size: 2.2rem;
-            margin: 10px 0;
-        }
-        
-        .users-section {
-            background: var(--bg-card);
-            border-radius: 15px;
-            padding: 30px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        
-        .users-section h2 {
-            color: #fff;
-            margin-bottom: 20px;
-            font-size: 1.8rem;
-            border-bottom: 2px solid var(--accent-gold);
-            display: inline-block;
-            padding-bottom: 5px;
-        }
-        
-        .search-box {
-            margin-bottom: 20px;
-            display: flex;
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+font-family:Poppins,Segoe UI,sans-serif;
+background:radial-gradient(circle at top,#900000,#3b0000);
+color:#fff;
+min-height:100vh;
+padding:25px;
+}
+
+.grid{
+position:fixed;inset:0;
+background:
+linear-gradient(rgba(255,215,0,.05) 1px,transparent 1px),
+linear-gradient(90deg,rgba(255,215,0,.05) 1px,transparent 1px);
+background-size:60px 60px;
+z-index:-1;
+}
+
+.container{max-width:1250px;margin:auto}
+
+.header{
+text-align:center;
+margin-bottom:45px;
+}
+
+.header h1{
+font-size:2.8rem;
+color:var(--gold);
+text-shadow:0 0 20px rgba(255,215,0,.6);
+}
+
+.header p{opacity:.85}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:22px;
+margin-bottom:40px;
+}
+
+.stat{
+background:linear-gradient(145deg,#660000,#3b0000);
+border:1px solid rgba(255,215,0,.25);
+border-radius:18px;
+padding:25px;
+text-align:center;
+transition:.3s;
+}
+
+.stat:hover{
+transform:translateY(-8px) scale(1.02);
+box-shadow:0 0 25px rgba(255,215,0,.3);
+}
+
+.stat i{
+font-size:26px;
+color:var(--gold);
+margin-bottom:10px;
+}
+
+.stat h3{
+font-size:2.4rem;
+margin-top:8px;
+color:#fff;
+}
+
+.users{
+background:var(--glass);
+backdrop-filter:blur(10px);
+border:1px solid rgba(255,215,0,.3);
+border-radius:20px;
+padding:30px;
+box-shadow:0 0 40px rgba(0,0,0,.5);
+}
+
+.users h2{
+color:var(--gold);
+margin-bottom:25px;
+}
+
+.search{
+display:flex;
+gap:12px;
+margin-bottom:25px;
+}
+
+.search input{
+flex:1;
+padding:14px 18px;
+border-radius:10px;
+border:1.5px solid var(--gold);
+background:rgba(0,0,0,.4);
+color:#fff;
+font-size:1rem;
+}
+
+.search button{
+padding:14px 28px;
+border:none;
+border-radius:10px;
+background:var(--gold);
+color:#4d0000;
+font-weight:700;
+cursor:pointer;
+transition:.3s;
+}
+
+.search button:hover{
+transform:scale(1.08);
+box-shadow:0 0 15px rgba(255,215,0,.7);
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th{
+color:var(--gold);
+padding:16px;
+border-bottom:2px solid var(--gold);
+text-align:left;
+}
+
+td{
+padding:15px;
+border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.status{
+padding:6px 14px;
+border-radius:20px;
+font-size:.85rem;
+font-weight:700;
+}
+
+.active{background:#22c55e;color:#fff}
+.inactive{background:#333;color:#bbb}
+
+.mode{
+padding:6px 14px;
+border-radius:6px;
+font-size:.85rem;
+font-weight:700;
+}
+
+.public{border:1px solid var(--gold);color:var(--gold)}
+.private{background:#fff;color:#7a0000}
+
+.spinner{
+width:45px;height:45px;
+border:4px solid rgba(255,255,255,.1);
+border-top:4px solid var(--gold);
+border-radius:50%;
+animation:spin 1s linear infinite;
+margin:40px auto;
+}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.footer{
+text-align:center;
+margin-top:40px;
+opacity:.7;
+font-size:.9rem;
+}
+</style>
+</head>
+
+<body>
+<div class="grid"></div>
+
+<div class="container">
+
+<div class="header">
+<h1><i class="fa-solid fa-user-shield"></i> ADEEL-MINI</h1>
+<p>Powerful Admin Control Dashboard</p>
+</div>
+
+<div class="stats">
+<div class="stat"><i class="fa-solid fa-users"></i><p>Total Users</p><h3 id="totalUsers">0</h3></div>
+<div class="stat"><i class="fa-solid fa-bolt"></i><p>Active</p><h3 id="activeUsers">0</h3></div>
+<div class="stat"><i class="fa-solid fa-lock"></i><p>Private</p><h3 id="privateUsers">0</h3></div>
+<div class="stat"><i class="fa-solid fa-globe"></i><p>Public</p><h3 id="publicUsers">0</h3></div>
+</div>
+
+<div class="users">
+<h2>Connected Users</h2>
+
+<div class="search">
+<input id="searchInput" placeholder="Search number...">
+<button onclick="filterUsers()">Search</button>
+</div>
+
+<div id="loading" class="spinner"></div>
+
+<div id="table" style="display:none;overflow:auto">
+<table>
+<thead>
+<tr>
+<th>Number</th>
+<th>Status</th>
+<th>Mode</th>
+<th>Last Active</th>
+<th>Created</th>
+</tr>
+</thead>
+<tbody id="usersBody"></tbody>
+</table>
+</div>
+</div>
+
+<div class="footer">
+© ADEEL-MINI • Last Update <span id="lastUpdate">—</span>
+</div>
+
+</div>
+
+<script>
+let allUsers=[];
+
+async function loadUsers(){
+try{
+const r=await fetch("/api/users");
+const d=await r.json();
+allUsers=d.users||[];
+updateStats();
+show(allUsers);
+loading.style.display="none";
+table.style.display="block";
+lastUpdate.textContent=new Date().toLocaleTimeString();
+}catch(e){console.log(e)}
+}
+
+function updateStats(){
+totalUsers.textContent=allUsers.length;
+activeUsers.textContent=allUsers.filter(u=>u.isActive).length;
+privateUsers.textContent=allUsers.filter(u=>u.mode=="private").length;
+publicUsers.textContent=allUsers.filter(u=>u.mode=="public").length;
+}
+
+function show(users){
+usersBody.innerHTML="";
+if(!users.length){
+usersBody.innerHTML=`<tr><td colspan="5" align="center">No Users</td></tr>`;
+return;
+}
+users.forEach(u=>{
+usersBody.innerHTML+=`
+<tr>
+<td><b>${u.number}</b></td>
+<td><span class="status ${u.isActive?"active":"inactive"}">${u.isActive?"Active":"Inactive"}</span></td>
+<td><span class="mode ${u.mode}">${u.mode}</span></td>
+<td>${u.lastActive?new Date(u.lastActive).toLocaleString():"Never"}</td>
+<td>${u.createdAt?new Date(u.createdAt).toLocaleDateString():"—"}</td>
+</tr>`;
+});
+}
+
+function filterUsers(){
+const q=searchInput.value.toLowerCase();
+show(allUsers.filter(u=>u.number.includes(q)));
+}
+
+setInterval(loadUsers,30000);
+window.onload=loadUsers;
+</script>
+
+</body>
+</html>            display: flex;
             gap: 10px;
         }
         
