@@ -5,117 +5,117 @@ module.exports = {
   name: "help",
   aliases: ["menu", "commands", "list", "cmd"],
   category: "main",
-  description: "Show bot command list with beautiful design",
+  description: "Show bot command list with a minimalist clean design",
 
   async execute(context) {
     const { reply, react, getUserConfig, socket, sock, conn, client, from, pushName, m } = context;
     const botClient = socket || sock || conn || client;
 
     try {
-      if (react) await react("📖");
+      if (react) await react("📂");
     } catch (e) {}
 
     const user = await (getUserConfig ? getUserConfig() : Promise.resolve({}));
     const prefix = (user && user.PREFIX) ? user.PREFIX : (config && config.PREFIX) ? config.PREFIX : ".";
     const userName = pushName || "User";
-    const founderName = config.FOUNDER_NAME || "ADEEL-MD";
+    const founderName = config.FOUNDER_NAME || "ADEEL";
     const botName = config.BOT_NAME || "ADEEL-MINI";
 
     const uptimeSeconds = Math.floor(process.uptime());
     const hours = Math.floor(uptimeSeconds / 3600);
     const minutes = Math.floor((uptimeSeconds % 3600) / 60);
 
-    const caption = `╭━━━━━━━━━━━━━━━╮
-┃  🤖 *${botName}*
-┃━━━━━━━━━━━━━━━━━
-┃  👋 Hello, *${userName}*!
-┃  📝 Prefix: *${prefix}*
-┃  ⏱️ Uptime: ${hours}h ${minutes}m
-┃  👑 Founder: *${founderName}*
-╰━━━━━━━━━━━━━━━━━╯
+    const caption = `
+『 *${botName.toUpperCase()}* 』
 
-╭━━━━ *📌 MAIN* ━━━━╮
-┃ ${prefix}menu
-┃ ${prefix}alive
-┃ ${prefix}ping
-┃ ${prefix}about
-┃ ${prefix}owner
-┃ ${prefix}uptime
-┃ ${prefix}channel
-╰━━━━━━━━━━━━━━━━╯
+*╭───〔 👤 ᴜsᴇʀ ɪɴғᴏ 〕───┈⊷*
+│ ⚡ *User:* ${userName}
+│ 🌀 *Prefix:* ${prefix}
+│ ⏳ *Uptime:* ${hours}h ${minutes}m
+╰────────────────┈⊷
 
-╭━━━━ *👥 GROUP* ━━━━╮
-┃ ${prefix}add
-┃ ${prefix}kick
-┃ ${prefix}promote
-┃ ${prefix}demote
-┃ ${prefix}admins
-┃ ${prefix}tagall
-┃ ${prefix}hidetag
-┃ ${prefix}open
-┃ ${prefix}close
-┃ ${prefix}ginfo
-┃ ${prefix}welcome
-┃ ${prefix}goodbye
-┃ ${prefix}warn
-┃ ${prefix}mute
-┃ ${prefix}unmute
-┃ ${prefix}antibot
-┃ ${prefix}antispam
-╰━━━━━━━━━━━━━━━━╯
+*┏━━〔 💠 ᴍᴀɪɴ 〕━━┓*
+┃ ❍ ${prefix}menu
+┃ ❍ ${prefix}alive
+┃ ❍ ${prefix}ping
+┃ ❍ ${prefix}about
+┃ ❍ ${prefix}owner
+┃ ❍ ${prefix}uptime
+┃ ❍ ${prefix}channel
+┗━━━━━━━━━━━━┛
 
-╭━━━━ *🤖 AI* ━━━━╮
-┃ ${prefix}ai
-┃ ${prefix}gpt
-┃ ${prefix}gemini
-┃ ${prefix}claude
-┃ ${prefix}deepseek
-┃ ${prefix}codeai
-╰━━━━━━━━━━━━━━━━━╯
+*┏━━〔 👥 ɢʀᴏᴜᴘ 〕━━┓*
+┃ ❍ ${prefix}add
+┃ ❍ ${prefix}kick
+┃ ❍ ${prefix}promote
+┃ ❍ ${prefix}demote
+┃ ❍ ${prefix}admins
+┃ ❍ ${prefix}tagall
+┃ ❍ ${prefix}hidetag
+┃ ❍ ${prefix}open
+┃ ❍ ${prefix}close
+┃ ❍ ${prefix}ginfo
+┃ ❍ ${prefix}welcome
+┃ ❍ ${prefix}goodbye
+┃ ❍ ${prefix}warn
+┃ ❍ ${prefix}mute
+┃ ❍ ${prefix}unmute
+┃ ❍ ${prefix}antibot
+┃ ❍ ${prefix}antispam
+┗━━━━━━━━━━━━┛
 
-╭━━━━ *📥 DOWNLOAD* ━━━━╮
-┃ ${prefix}play
-┃ ${prefix}video
-┃ ${prefix}autosong
-┃ ${prefix}fb
-┃ ${prefix}insta
-┃ ${prefix}tiktok
-┃ ${prefix}spotify
-┃ ${prefix}ytsearch
-╰━━━━━━━━━━━━━━━━━━━╯
+*┏━━〔 🤖 ᴀɪ ᴛᴏᴏʟs 〕━━┓*
+┃ ❍ ${prefix}ai
+┃ ❍ ${prefix}gpt
+┃ ❍ ${prefix}gemini
+┃ ❍ ${prefix}claude
+┃ ❍ ${prefix}deepseek
+┃ ❍ ${prefix}codeai
+┗━━━━━━━━━━━━┛
 
-╭━━━━ *🛠️ UTILITY* ━━━━╮
-┃ ${prefix}weather
-┃ ${prefix}translate
-┃ ${prefix}calc
-┃ ${prefix}qr
-┃ ${prefix}google
-╰━━━━━━━━━━━━━━━━━╯
+*┏━━〔 📥 ᴅᴏᴡɴʟᴏᴀᴅ 〕━━┓*
+┃ ❍ ${prefix}play
+┃ ❍ ${prefix}video
+┃ ❍ ${prefix}autosong
+┃ ❍ ${prefix}fb
+┃ ❍ ${prefix}insta
+┃ ❍ ${prefix}tiktok
+┃ ❍ ${prefix}spotify
+┃ ❍ ${prefix}ytsearch
+┗━━━━━━━━━━━━┛
 
-╭━━━━ *🎉 FUN* ━━━━╮
-┃ ${prefix}joke
-┃ ${prefix}quote
-┃ ${prefix}fact
-╰━━━━━━━━━━━━━━━━╯
+*┏━━〔 🛠️ ᴜᴛɪʟɪᴛʏ 〕━━┓*
+┃ ❍ ${prefix}weather
+┃ ❍ ${prefix}translate
+┃ ❍ ${prefix}calc
+┃ ❍ ${prefix}qr
+┃ ❍ ${prefix}google
+┗━━━━━━━━━━━━┛
 
-╭━━━━ *⚙️ OWNER* ━━━━╮
-┃ ${prefix}anticall
-┃ ${prefix}antiedit
-┃ ${prefix}antidelete
-┃ ${prefix}antilink
-┃ ${prefix}antigroup
-┃ ${prefix}settings
-┃ ${prefix}mode
-┃ ${prefix}setprefix
-┃ ${prefix}allvar
-┃ ${prefix}broadcast
-┃ ${prefix}block
-┃ ${prefix}unblock
-┃ ${prefix}restart
-┃ ${prefix}jid
-╰━━━━━━━━━━━━━━━━╯
+*┏━━〔 🎉 ғᴜɴ 〕━━┓*
+┃ ❍ ${prefix}joke
+┃ ❍ ${prefix}quote
+┃ ❍ ${prefix}fact
+┗━━━━━━━━━━━━┛
 
-> © *${founderName}* | ${botName}`;
+*┏━━〔 ⚙️ ᴏᴡɴᴇʀ 〕━━┓*
+┃ ❍ ${prefix}anticall
+┃ ❍ ${prefix}antiedit
+┃ ❍ ${prefix}antidelete
+┃ ❍ ${prefix}antilink
+┃ ❍ ${prefix}antigroup
+┃ ❍ ${prefix}settings
+┃ ❍ ${prefix}mode
+┃ ❍ ${prefix}setprefix
+┃ ❍ ${prefix}allvar
+┃ ❍ ${prefix}broadcast
+┃ ❍ ${prefix}block
+┃ ❍ ${prefix}unblock
+┃ ❍ ${prefix}restart
+┃ ❍ ${prefix}jid
+┗━━━━━━━━━━━━┛
+
+> ɢᴇɴᴇʀᴀᴛᴇᴅ ʙʏ ${founderName} ✨`;
 
     const imgPath = "./data/Adeel.jpg";
     const hasImage = fs.existsSync(imgPath);
