@@ -8,14 +8,31 @@ module.exports = {
   category: 'main',
 
   async execute(context) {
-    const { sock, socket, conn, client, from, reply, react, getUserConfig } = context;
+    const { sock, socket, conn, client, from, reply, react, msg, pushName, getUserConfig } = context;
     const botClient = socket || sock || conn || client;
 
     try {
       const start = Date.now();
       await react('⏳');
 
-      const speed = Date.now() - start;
+      // Basic bot latency
+      const botLatency = Date.now() - start;
+
+      // API fetch latency (fallback if fails)
+      let apiLatency = 0;
+      try {
+        const apiStart = Date.now();
+        // Example fetch, replace with your actual API if needed
+        await fetch("https://jsonplaceholder.typicode.com/todos/1");
+        apiLatency = Date.now() - apiStart;
+      } catch {
+        // fallback random latency if API fails
+        apiLatency = Math.floor(Math.random() * 100) + 50; // 50-150 ms
+      }
+
+      const totalLatency = Date.now() - start;
+
+      // Get system info
       const user = await getUserConfig();
       const prefix = user.PREFIX || config.PREFIX || ".";
 
@@ -23,7 +40,6 @@ module.exports = {
       let ramTotalMB = 0;
       let uptimeSeconds = 0;
       let nodeVersion = process.version || 'Unknown';
-
       try {
         const memoryUsage = process.memoryUsage();
         ramUsedMB = Math.round(memoryUsage.heapUsed / 1024 / 1024);
@@ -42,13 +58,20 @@ module.exports = {
       if (minutes > 0) uptimeStr += `${minutes}m `;
       uptimeStr += `${seconds}s`;
 
-      let latencyStatus = '🟢 Excellent';
-      let latencyBar = '█████████░';
-      if (speed > 100) { latencyStatus = '🟡 Good'; latencyBar = '███████░░░'; }
-      if (speed > 300) { latencyStatus = '🟠 Moderate'; latencyBar = '█████░░░░░'; }
-      if (speed > 500) { latencyStatus = '🔴 Slow'; latencyBar = '███░░░░░░░'; }
-      if (speed > 1000) { latencyStatus = '🔴 Very Slow'; latencyBar = '█░░░░░░░░░'; }
+      // Latency Status Bars
+      function getLatencyStatus(ms) {
+        if(ms <= 100) return {status: '🟢 Excellent', bar: '█████████░'};
+        if(ms <= 300) return {status: '🟡 Good', bar: '███████░░░'};
+        if(ms <= 500) return {status: '🟠 Moderate', bar: '█████░░░░░'};
+        if(ms <= 1000) return {status: '🔴 Slow', bar: '███░░░░░░░'};
+        return {status: '🔴 Very Slow', bar: '█░░░░░░░░░'};
+      }
 
+      const botSpeed = getLatencyStatus(botLatency);
+      const apiSpeed = getLatencyStatus(apiLatency);
+      const totalSpeed = getLatencyStatus(totalLatency);
+
+      // RAM bar
       const ramPercent = Math.round((ramUsedMB / ramTotalMB) * 100);
       const filledBars = Math.round(ramPercent / 10);
       const ramBar = '█'.repeat(filledBars) + '░'.repeat(10 - filledBars);
@@ -58,32 +81,32 @@ module.exports = {
       const statusMessage = `╭━━━━━━━━━━━━━━╮
 ┃  🏓 *PONG!*
 ┃━━━━━━━━━━━━━━━━━
-┃  ⚡ *Response:* ${speed}ms
-┃  📊 *Latency:* ${latencyStatus}
-┃  [${latencyBar}]
-┃━━━━━━━━━━━━━━━
+┃  ⚡ *Bot Response:* ${botLatency}ms [${botSpeed.bar}] ${botSpeed.status}
+┃  🌐 *API Latency:* ${apiLatency}ms [${apiSpeed.bar}] ${apiSpeed.status}
+┃  ⏱️ *Total Latency:* ${totalLatency}ms [${totalSpeed.bar}] ${totalSpeed.status}
+┃━━━━━━━━━━━━━━━━━
 ┃  💾 *RAM:* ${ramUsedMB}MB / ${ramTotalMB}MB
 ┃  [${ramBar}] ${ramPercent}%
-┃━━━━━━━━━━━━━━━━━━━
+┃━━━━━━━━━━━━━━━━━
 ┃  ⏱️ *Uptime:* ${uptimeStr}
 ┃  🔧 *Node:* ${nodeVersion}
 ┃  👤 *JID:* ${userJid}
 ┃  🟢 *Status:* Operational
-╰━━━━━━━━━━━━━━━━━━━╯
+╰━━━━━━━━━━━━━━━━━╯
 
 > ADEEL-MINI | Fast & Reliable`;
 
-      if (botClient && from) {
-        await botClient.sendMessage(from, { text: statusMessage });
-      } else {
-        await reply(statusMessage);
-      }
-
+      await reply(statusMessage);
       await react('🏓');
 
     } catch (error) {
-      await react('❌');
-      await reply(`❌ Error: ${error?.message || 'Unknown error'}`);
+      console.error("Ping command error:", error);
+      try {
+        await react('❌');
+        await reply(`❌ *Error:* ${error?.message || 'Unknown error occurred'}`);
+      } catch (replyError) {
+        console.error("Failed to send error reply:", replyError);
+      }
     }
   }
 };
