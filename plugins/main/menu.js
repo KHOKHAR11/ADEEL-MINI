@@ -11,10 +11,10 @@ module.exports = {
     const { reply, react, getUserConfig, socket, sock, conn, client, from, pushName, m } = context;
     const botClient = socket || sock || conn || client;
 
-    try { if (react) await react("📂"); } catch (e) {}
+    try { if (react) await react("📂"); } catch {}
 
     const user = await (getUserConfig ? getUserConfig() : Promise.resolve({}));
-    const prefix = (user && user.PREFIX) ? user.PREFIX : (config && config.PREFIX) ? config.PREFIX : ".";
+    const prefix = (user && user.PREFIX) || (config && config.PREFIX) || ".";
     const userName = pushName || "User";
     const founderName = config.FOUNDER_NAME || "ADEEL";
     const botName = config.BOT_NAME || "ADEEL-MINI";
@@ -116,71 +116,30 @@ module.exports = {
 
     const imgPath = "./data/Adeel.jpg";
     const hasImage = fs.existsSync(imgPath);
-    const chatId = from || (m && m.chat) || context.chat || null;
-
-    try { if (botClient && typeof botClient.sendPresenceUpdate === "function" && chatId) {
-      await botClient.sendPresenceUpdate("composing", chatId);
-      await new Promise(res => setTimeout(res, 500));
-    }} catch {}
+    const chatId = from || m?.chat;
 
     try {
-      if (hasImage && botClient && typeof botClient.sendMessage === "function" && chatId) {
-        await botClient.sendMessage(chatId, { image: fs.readFileSync(imgPath), caption });
-      } else if (typeof reply === "function") await reply(caption);
-    } catch { if (typeof reply === "function") await reply(caption); }
-
-    try { if (react) await react("✅"); } catch {}
-    try { if (botClient && typeof botClient.sendPresenceUpdate === "function" && chatId) {
-      await botClient.sendPresenceUpdate("paused", chatId);
-    }} catch {}
-  }
-};┃ ❍ ${prefix}antilink
-┃ ❍ ${prefix}antigroup
-┃ ❍ ${prefix}settings
-┃ ❍ ${prefix}mode
-┃ ❍ ${prefix}setprefix
-┃ ❍ ${prefix}allvar
-┃ ❍ ${prefix}broadcast
-┃ ❍ ${prefix}block
-┃ ❍ ${prefix}unblock
-┃ ❍ ${prefix}restart
-┃ ❍ ${prefix}jid
-┗━━━━━━━━━━━━┛
-
-> ɢᴇɴᴇʀᴀᴛᴇᴅ ʙʏ ${founderName} ✨`;
-
-    const imgPath = "./data/Adeel.jpg";
-    const hasImage = fs.existsSync(imgPath);
-    const chatId = from || (m && m.chat) || context.chat || null;
-
-    try {
-      if (botClient && typeof botClient.sendPresenceUpdate === "function" && chatId) {
+      if (botClient?.sendPresenceUpdate && chatId) {
         await botClient.sendPresenceUpdate("composing", chatId);
-        await new Promise(res => setTimeout(res, 500));
       }
     } catch {}
 
     try {
-      if (hasImage && botClient && typeof botClient.sendMessage === "function" && chatId) {
+      if (hasImage && botClient?.sendMessage && chatId) {
         await botClient.sendMessage(chatId, {
           image: fs.readFileSync(imgPath),
           caption
         });
-      } else if (typeof reply === "function") {
+      } else {
         await reply(caption);
       }
     } catch {
-      if (typeof reply === "function") await reply(caption);
+      await reply(caption);
     }
 
-    try {
-      if (react) await react("✅");
-    } catch {}
-
-    try {
-      if (botClient && typeof botClient.sendPresenceUpdate === "function" && chatId) {
-        await botClient.sendPresenceUpdate("paused", chatId);
-      }
-    } catch {}
+    try { if (react) await react("✅"); } catch {}
+    try { if (botClient?.sendPresenceUpdate && chatId) {
+      await botClient.sendPresenceUpdate("paused", chatId);
+    }} catch {}
   }
 };
