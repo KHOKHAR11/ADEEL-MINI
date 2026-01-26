@@ -31,17 +31,21 @@ overflow-x:hidden;
 
 /* Grid */
 .grid-bg{
-position:fixed;inset:0;
+position:fixed;
+inset:0;
 background:
 linear-gradient(rgba(255,0,0,.1) 1px,transparent 1px),
 linear-gradient(90deg,rgba(255,0,0,.1) 1px,transparent 1px);
 background-size:50px 50px;
 z-index:0;
+pointer-events:none;
 }
 
 /* Header */
 header{
-position:sticky;top:0;z-index:100;
+position:sticky;
+top:0;
+z-index:100;
 background:rgba(128,0,0,.92);
 backdrop-filter:blur(10px);
 border-bottom:2px solid var(--gold);
@@ -103,6 +107,242 @@ background:var(--card);
 border:1px solid var(--border);
 border-radius:18px;
 padding:25px;
+text-align:center;
+transition:.3s;
+}
+
+.stat-card:hover{
+transform:translateY(-6px);
+box-shadow:0 0 20px rgba(255,215,0,.25);
+}
+
+.stat-value{
+font-size:2rem;
+font-weight:800;
+color:var(--gold);
+}
+
+/* Section */
+.section{
+background:var(--card);
+border:2px solid var(--border);
+border-radius:22px;
+padding:40px;
+margin-bottom:45px;
+}
+
+.input-field{
+width:100%;
+padding:14px;
+margin:15px 0;
+border-radius:12px;
+border:1.5px solid #fff;
+background:rgba(255,255,255,.12);
+color:#fff;
+}
+
+/* Buttons */
+.btn{
+padding:14px 30px;
+border-radius:12px;
+border:none;
+font-weight:700;
+cursor:pointer;
+display:inline-flex;
+align-items:center;
+gap:10px;
+transition:.3s;
+}
+
+.btn-primary{
+background:#fff;
+color:#800000;
+}
+
+.btn-primary:hover{
+transform:scale(1.06);
+box-shadow:0 0 18px rgba(255,215,0,.6);
+}
+
+.btn-secondary{
+background:transparent;
+border:1.5px solid #fff;
+color:#fff;
+margin-top:12px;
+}
+
+/* Code Box */
+.code-display{
+display:none;
+margin-top:25px;
+background:rgba(0,0,0,.4);
+border:2px dashed var(--gold);
+border-radius:18px;
+padding:30px;
+text-align:center;
+}
+
+.code-display.show{display:block}
+
+.code-value{
+font-size:2.5rem;
+font-weight:900;
+letter-spacing:8px;
+color:var(--gold);
+}
+
+/* Features */
+.features{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:20px;
+}
+
+.feature{
+background:rgba(0,0,0,.25);
+border:1px solid var(--border);
+border-radius:16px;
+padding:22px;
+text-align:center;
+}
+
+.feature i{
+font-size:1.6rem;
+color:var(--gold);
+margin-bottom:10px;
+}
+
+/* Particles */
+.particle{
+position:absolute;
+width:4px;
+height:15px;
+background:var(--gold);
+border-radius:2px;
+pointer-events:none;
+z-index:1000;
+}
+
+/* Footer */
+footer{
+text-align:center;
+padding:40px;
+border-top:1px solid var(--border);
+opacity:.85;
+}
+</style>
+</head>
+
+<body>
+
+<div class="grid-bg"></div>
+
+<header>
+<div class="navbar">
+<div class="logo"><i class="fab fa-whatsapp"></i> ADEEL-MINI</div>
+<div class="online"><span style="color:var(--gold)">●</span> Online</div>
+</div>
+</header>
+
+<main>
+
+<div class="hero">
+<h1>Bot Management</h1>
+<p>Powerful WhatsApp Automation Redefined</p>
+</div>
+
+<div class="stats">
+<div class="stat-card"><div>Active Bots</div><div class="stat-value">0</div></div>
+<div class="stat-card"><div>Plugins</div><div class="stat-value">88</div></div>
+<div class="stat-card"><div>System</div><div class="stat-value" style="font-size:1.4rem">STABLE</div></div>
+</div>
+
+<div class="section">
+<h2><i class="fas fa-link" style="color:var(--gold)"></i> Connect Bot</h2>
+
+<input id="phone-number" class="input-field" placeholder="923035512967">
+
+<button class="btn btn-primary" id="pair-btn">
+<i class="fas fa-key"></i> Generate Pairing Code
+</button>
+
+<div id="code-display" class="code-display">
+<div style="opacity:.7;font-size:.85rem">Your Code</div>
+<div class="code-value" id="pair-code">------</div>
+
+<button class="btn btn-secondary" id="copy-btn">
+<i class="fas fa-copy"></i> Copy Code
+</button>
+</div>
+</div>
+
+</main>
+
+<footer>
+<p>© 2026 ADEEL-MINI Bot</p>
+</footer>
+
+<script>
+const phoneNumber = document.getElementById("phone-number");
+const pairBtn = document.getElementById("pair-btn");
+const pairCode = document.getElementById("pair-code");
+const codeDisplay = document.getElementById("code-display");
+const copyBtn = document.getElementById("copy-btn");
+
+function createParticles(x, y){
+for(let i=0;i<25;i++){
+const p=document.createElement("div");
+p.className="particle";
+document.body.appendChild(p);
+const a=Math.random()*Math.PI*2;
+const tx=Math.cos(a)*160;
+const ty=Math.sin(a)*160;
+p.style.left=x+"px";
+p.style.top=y+"px";
+p.animate(
+[{transform:"translate(0,0)",opacity:1},
+{transform:`translate(${tx}px,${ty}px)`,opacity:0}],
+{duration:900,easing:"ease-out"}
+).onfinish=()=>p.remove();
+}
+}
+
+pairBtn.addEventListener("click", async (e)=>{
+createParticles(e.pageX,e.pageY);
+
+const phone = phoneNumber.value.trim();
+if(!phone) return alert("Number daalo");
+
+pairBtn.disabled=true;
+pairBtn.innerHTML="Generating...";
+
+try{
+const r=await fetch(`/code?number=${phone}`);
+const d=await r.json();
+if(d.code){
+pairCode.textContent=d.code;
+codeDisplay.classList.add("show");
+}
+}catch{
+alert("Server error");
+}
+
+pairBtn.disabled=false;
+pairBtn.innerHTML='<i class="fas fa-key"></i> Generate Pairing Code';
+});
+
+copyBtn.addEventListener("click",(e)=>{
+createParticles(e.pageX,e.pageY);
+navigator.clipboard.writeText(pairCode.textContent);
+copyBtn.innerHTML="✓ Copied";
+setTimeout(()=>{
+copyBtn.innerHTML='<i class="fas fa-copy"></i> Copy Code';
+},1500);
+});
+</script>
+
+</body>
+</html>padding:25px;
 text-align:center;
 transition:.3s;
 }
