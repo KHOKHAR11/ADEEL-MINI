@@ -1,6 +1,6 @@
 {
   "name": "ADEEL-MINI",
-  "description": "ADEEL-MINI WhatsApp Bot",
+  "description": "ADEEL-MINI WhatsApp Bot - Fast & Optimized",
   "repository": "",
   "logo": "",
   "keywords": ["whatsapp", "bot", "adeel-mini"],
@@ -11,21 +11,74 @@
   ],
   "env": {
     "MONGODB_URI": {
-      "description": "MongoDB connection URI",
-      "required": false
+      "description": "MongoDB connection URI (mongodb+srv://...)",
+      "required": false,
+      "value": ""
     },
     "OWNER_NUMBER": {
-      "description": "Your WhatsApp number with country code (e.g. 923001234567)",
-      "required": true
-    },
-    "BOT_TOKEN": {
-      "description": "Telegram Bot Token (optional)",
-      "required": false
+      "description": "Your WhatsApp number with country code - no + or spaces (e.g. 923035512967)",
+      "required": true,
+      "value": "923035512967"
     },
     "PREFIX": {
       "description": "Bot command prefix",
-      "value": ".",
-      "required": false
+      "required": false,
+      "value": "."
+    },
+    "MODE": {
+      "description": "Bot mode: public or private",
+      "required": false,
+      "value": "public"
+    },
+    "BOT_NAME": {
+      "description": "Bot display name",
+      "required": false,
+      "value": "ADEEL-MINI"
+    },
+    "FOUNDER_NAME": {
+      "description": "Founder/owner name",
+      "required": false,
+      "value": "ADEEL"
+    },
+    "TELEGRAM_BOT_TOKEN": {
+      "description": "Telegram Bot Token for pairing code delivery (optional)",
+      "required": false,
+      "value": ""
+    },
+    "TELEGRAM_OWNER_ID": {
+      "description": "Your Telegram user ID (optional)",
+      "required": false,
+      "value": ""
+    },
+    "ANTICALL": {
+      "description": "Auto reject incoming calls: true or false",
+      "required": false,
+      "value": "false"
+    },
+    "AUTO_VIEW_STATUS": {
+      "description": "Auto view WhatsApp status: true or false",
+      "required": false,
+      "value": "true"
+    },
+    "AUTO_LIKE_STATUS": {
+      "description": "Auto react to status: true or false",
+      "required": false,
+      "value": "false"
+    },
+    "AUTO_RECORDING": {
+      "description": "Show recording status: true or false",
+      "required": false,
+      "value": "false"
+    },
+    "GROUP_INVITE_LINK": {
+      "description": "WhatsApp group invite link for bot to auto-join",
+      "required": false,
+      "value": "https://chat.whatsapp.com/Lgzkk6HHuZICvYFMigyFrZ"
+    },
+    "CHANNEL_LINK": {
+      "description": "WhatsApp channel link",
+      "required": false,
+      "value": "https://whatsapp.com/channel/0029VbBmz4V5vKAIaWfYPT0C"
     }
   },
   "formation": {
