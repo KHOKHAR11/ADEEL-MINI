@@ -1,0 +1,39 @@
+{
+  "name": "ADEEL-MINI",
+  "description": "ADEEL-MINI WhatsApp Bot",
+  "repository": "",
+  "logo": "",
+  "keywords": ["whatsapp", "bot", "adeel-mini"],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "env": {
+    "MONGODB_URI": {
+      "description": "MongoDB connection URI",
+      "required": false
+    },
+    "OWNER_NUMBER": {
+      "description": "Your WhatsApp number with country code (e.g. 923001234567)",
+      "required": true
+    },
+    "BOT_TOKEN": {
+      "description": "Telegram Bot Token (optional)",
+      "required": false
+    },
+    "PREFIX": {
+      "description": "Bot command prefix",
+      "value": ".",
+      "required": false
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "eco"
+    }
+  },
+  "addons": [],
+  "scripts": {}
+}
