@@ -1,0 +1,14 @@
+{
+  "enabled": true,
+  "status_auto_reply": true,
+  "status_reply_message": "Thanks for sharing your status! 💫",
+  "triggers": {
+    "hi": "Hello! 👋 How can I help you today?",
+    "hello": "Hi there! 👋 Welcome to Adeel-md Bot!",
+    "help": "Type .menu to see all available commands! 📚",
+    "thanks": "You're welcome! 🙏",
+    "bye": "Goodbye! Have a great day! 👋"
+  },
+  "auto_react_status": true,
+  "status_emojis": ["❤️", "🔥", "💯", "👏", "💪", "🎉", "✨", "💫", "🌟", "💝"]
+}
