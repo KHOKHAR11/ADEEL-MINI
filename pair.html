@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADEEL-MINI - WhatsApp Pairing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-primary: #800000; /* Maroon */
+            --bg-secondary: #660000;
+            --bg-card: rgba(102, 0, 0, 0.9);
+            --accent-gold: #ffd700; /* Gold */
+            --text-primary: #ffffff;
+            --text-secondary: #f0f0f0;
+            --text-muted: rgba(255, 255, 255, 0.6);
+            --border-color: rgba(255, 215, 0, 0.3);
+            --success: #ffd700;
+            --error: #ff4d4d;
+            --gradient: linear-gradient(135deg, #ffd700 0%, #ffcc00 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .grid-bg {
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(255, 215, 0, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 215, 0, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 480px;
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .logo-box {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 2.5rem;
+            color: #800000; /* Maroon text on Gold icon */
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 900;
+            margin-bottom: 10px;
+            color: var(--accent-gold);
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .form-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--accent-gold);
+            font-size: 0.9rem;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1.5px solid var(--border-color);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: var(--accent-gold);
+            color: #800000;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid #fff;
+            color: #fff;
+            margin-top: 15px;
+        }
+
+        .btn-secondary:hover {
+            background: #fff;
+            color: #800000;
+        }
+
+        .code-display {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px dashed var(--accent-gold);
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 24px;
+            display: none;
+        }
+
+        .code-display.show { display: block; }
+
+        .code-value {
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: 8px;
+            color: var(--accent-gold);
+            margin-bottom: 10px;
+        }
+
+        .code-timer {
+            color: #fff;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+            opacity: 0.8;
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .alert.show { display: flex; align-items: center; gap: 8px; }
+        .alert-error { background: rgba(255, 0, 0, 0.2); border: 1px solid var(--error); color: #ffcccc; }
+        .alert-success { background: rgba(255, 215, 0, 0.2); border: 1px solid var(--accent-gold); color: #fff; }
+
+        .info-box {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 24px;
+            text-align: left;
+        }
+
+        .info-box h3 { color: var(--accent-gold); font-size: 1rem; margin-bottom: 10px; }
+        .info-box ol { color: #f0f0f0; padding-left: 20px; font-size: 0.85rem; line-height: 1.6; }
+
+        .back-link {
+            display: inline-block;
+            color: #fff;
+            text-decoration: none;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(128, 0, 0, 0.3);
+            border-top-color: #800000;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+
+    <div class="container">
+        <div class="card">
+            <div class="logo-box">
+                <i class="fab fa-whatsapp"></i>
+            </div>
+
+            <h1>ADEEL-MINI</h1>
+            <p class="subtitle">Connect your WhatsApp bot in seconds</p>
+
+            <form id="pairForm" onsubmit="handleSubmit(event)">
+                <div class="form-group">
+                    <label class="form-label"><i class="fas fa-phone"></i> Phone Number</label>
+                    <input type="text" class="input-field" id="phoneNumber" placeholder="923035512967" required />
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    <i class="fas fa-key"></i> Generate Pairing Code
+                </button>
+            </form>
+
+            <div class="code-display" id="codeDisplay">
+                <div style="font-size: 0.75rem; letter-spacing: 1px; margin-bottom: 8px;">YOUR CODE</div>
+                <div class="code-value" id="pairingCode">--------</div>
+                <div class="code-timer" id="codeTimer">Expires in 60 seconds</div>
+                <button type="button" class="btn btn-secondary" onclick="copyCode()" id="copyBtn">
+                    <i class="fas fa-copy"></i> Copy Code
+                </button>
+            </div>
+
+            <div class="alert alert-error" id="errorAlert"><i class="fas fa-times-circle"></i> <span id="errorMessage"></span></div>
+            <div class="alert alert-success" id="successAlert"><i class="fas fa-check-circle"></i> <span id="successMessage"></span></div>
+
+            <div class="info-box">
+                <h3><i class="fas fa-info-circle"></i> Instructions</h3>
+                <ol>
+                    <li>Open WhatsApp → Linked Devices</li>
+                    <li>Tap 'Link a Device' → 'Link with phone number'</li>
+                    <li>Enter the 8-digit code shown above</li>
+                </ol>
+            </div>
+
+            <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        // Scripts from original file maintained
+        const form = document.getElementById('pairForm');
+        const phoneInput = document.getElementById('phoneNumber');
+        const submitBtn = document.getElementById('submitBtn');
+        const codeDisplay = document.getElementById('codeDisplay');
+        const pairingCode = document.getElementById('pairingCode');
+        const codeTimer = document.getElementById('codeTimer');
+        const errorAlert = document.getElementById('errorAlert');
+        const successAlert = document.getElementById('successAlert');
+
+        let timerInterval = null;
+
+        function startTimer(seconds) {
+            if (timerInterval) clearInterval(timerInterval);
+            let remaining = seconds;
+            timerInterval = setInterval(() => {
+                remaining--;
+                if (remaining <= 0) {
+                    clearInterval(timerInterval);
+                    codeTimer.textContent = 'Code expired';
+                } else {
+                    codeTimer.textContent = `Expires in ${remaining} seconds`;
+                }
+            }, 1000);
+        }
+
+        function copyCode() {
+            const code = pairingCode.textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = document.getElementById('copyBtn');
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => { btn.innerHTML = '<i class="fas fa-copy"></i> Copy Code'; }, 2000);
+            });
+        }
+
+        async function handleSubmit(e) {
+            e.preventDefault();
+            const phone = phoneInput.value.replace(/[^0-9]/g, '');
+            if (phone.length < 10) return;
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<div class="spinner"></div> Processing...';
+
+            try {
+                const response = await fetch(`/code?number=${phone}`);
+                const data = await response.json();
+                if (data.code) {
+                    pairingCode.textContent = data.code;
+                    codeDisplay.classList.add('show');
+                    startTimer(60);
+                }
+            } catch (err) {
+                console.error(err);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-key"></i> Generate Pairing Code';
+            }
+        }
+    </script>
+</body>
+</html>
